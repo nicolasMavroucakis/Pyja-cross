@@ -1,4 +1,5 @@
 import pygame
+import math
 
 pygame.init()
 
@@ -45,34 +46,68 @@ blocks = [
 ]
 
 def drawSheet():
-    for i in range(len(blocks)):
-        for j in range(len(blocks[i])):
-            if blocks[i][j]["enabled"]:
-                # print(i,j)
-                pygame.draw.rect(screen, colors["white"], (j * 50, i * 50, squareSide, squareSide))
+    for y in range(len(blocks)):
+        for x in range(len(blocks[y])):
+            if blocks[y][x]["enabled"]:
+                pygame.draw.rect(screen, colors["white"], (x * 50, y * 50, squareSide, squareSide))
 
             else:
-                pygame.draw.rect(screen, colors["gray"], (j * 50, i * 50, squareSide, squareSide))
+                pygame.draw.rect(screen, colors["gray"], (x * 50, y * 50, squareSide, squareSide))
 
-            pygame.draw.rect(screen, colors["black"], (j * 50, i * 50, squareSide, squareSide), 2)
+            pygame.draw.rect(screen, colors["black"], (x * 50, y * 50, squareSide, squareSide), 2)
 
-            letter = font.render(blocks[i][j]["written"], True, colors["red"])
-            screen.blit(letter, (j * 50 + 167, i * 50 + 117))
+            letter = font.render(blocks[y][x]["written"], True, colors["red"])
+            screen.blit(letter, (x * 50 + 167, y * 50 + 117))
 
 def updateGrid():
     drawSheet()
     pygame.display.update()
 
+# def updateSelected(selected, direction):
+
+    # x,y = selected
+
+    # if direction == "right":
+
+    #     newPos = getNextEnabled(selected, direction)
+
+    #     selected = newPos
+
+    # elif direction == "left":
+    #     if x-1 < 0:
+
+    #         if y-1 < 0:
+    #             y = len(blocks) - 1
+    #             x = len(blocks[y]) - 1
+            
+    #         else:
+    #             y -= 1
+    #             x = len(blocks[y])
+
+    #     else:
+
+    #         x -= 1
+
+    # updateGrid();
+
 while running:
 
     pygame.time.delay(100)
-
-    screen.fill(colors["red"])
+    updateGrid()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    updateGrid()
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+
+            x,y = pos
+
+            squareY = math.floor(y / len(blocks))
+
+            squareX = math.floor(x / len(blocks[squareY]))
+
+            print(squareX, squareY)
 
 pygame.quit()
