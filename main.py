@@ -1,4 +1,5 @@
 import pygame
+from misc import *
 
 pygame.init()
 
@@ -6,11 +7,13 @@ colors = {
     "red": (255,0,0),
     "white": (200,200,200),
     "black": (0,0,0),
-    "gray": (100,100,100)
+    "gray": (100,100,100),
+    "win_bg": (8, 84, 84)
 }
 
-screen = pygame.display.set_mode((550,545))
+screen = pygame.display.set_mode((550,700))
 running = True
+inGame = False
 
 pygame.display.set_caption("PyJa Cross", "https://cdn-icons-png.flaticon.com/512/124/124034.png?w=360")
 clock = pygame.time.Clock()
@@ -18,6 +21,7 @@ clock = pygame.time.Clock()
 # pygame.display.set_icon(icon)
 
 font = pygame.font.SysFont(None, 50)
+titleFont = pygame.font.SysFont(None, 100)
 
 squareSide = 60
 selected = (0,0)
@@ -66,6 +70,7 @@ def drawSheet(selected):
 
 def updateGrid(selected):
     drawSheet(selected)
+    createButtons()
     pygame.display.update()
 
 def updateSelected(selected, direction):
@@ -156,19 +161,60 @@ def cleanField(selected):
 
     direction = "left" if selectedDirection == "row" else "up"
 
-    # print("1 - ", selected)
-
     position,_ = updateSelected(selected, direction)
-    # print("2 - ", position)
     x,y = position
     blocks[y][x]["written"] = ""
 
-    # print("3 - ", selected)
     updateGrid(selected)
     
     _selected, _ = updateSelected(selected, direction)
 
     return _selected
+
+def changeDirection(selected):
+    x,y = selected
+    newDirection = selectedDirection
+
+    if len(blocks[y][x]["words"]) > 1:
+        newDirection = "column" if selectedDirection == "row" else "row"
+
+    return newDirection
+
+def checkLetter(x, y):
+    if blocks[y][x]["written"] == blocks[y][x]["letter"]:
+        return True
+    else:
+        return False
+
+def checkPoints():
+
+    win = True
+
+    for y in range(len(blocks)):
+        for x in range(len(blocks[y])):
+            if not checkLetter(x, y):
+                win = False
+
+    return win
+
+def drawResult(win):
+    print("3")
+    if win:
+        print("4")
+        pygame.draw.rect(screen, colors["win_bg"], pygame.Rect(100, 200, 350, 150))
+        text = titleFont.render("VITÓRIA", True, colors["white"])
+        screen.blit(text, (130, 235))
+        pygame.display.update()
+
+def createButtons():
+    buttonImg = pygame.image.load("images/send_button.png").convert_alpha()
+
+    sendButton = Button((200, 600), buttonImg, 0.5)
+    if sendButton.draw(screen):
+        print("1")
+        if checkPoints():
+            print("2")
+            drawResult(True)
 
 while running:
 
@@ -194,7 +240,7 @@ while running:
     if keys[pygame.K_BACKSPACE]:
         selected = cleanField(selected)
     if keys[pygame.K_RETURN]:
-        selectedDirection = "row" if selectedDirection == "column" else "column"
+        selectedDirection = changeDirection(selected)
 
     updateGrid(selected)
 
