@@ -1,5 +1,6 @@
 import pygame
 from misc import *
+import time
 
 pygame.init()
 
@@ -181,13 +182,12 @@ def changeDirection(selected):
     return newDirection
 
 def checkLetter(x, y):
-    if blocks[y][x]["written"] == blocks[y][x]["letter"]:
+    if blocks[y][x]["written"].upper() == blocks[y][x]["letter"].upper() or not blocks[y][x]["enabled"]:
         return True
     else:
         return False
 
 def checkPoints():
-
     win = True
 
     for y in range(len(blocks)):
@@ -198,9 +198,7 @@ def checkPoints():
     return win
 
 def drawResult(win):
-    print("3")
     if win:
-        print("4")
         pygame.draw.rect(screen, colors["win_bg"], pygame.Rect(100, 200, 350, 150))
         text = titleFont.render("VITÓRIA", True, colors["white"])
         screen.blit(text, (130, 235))
@@ -211,10 +209,12 @@ def createButtons():
 
     sendButton = Button((200, 600), buttonImg, 0.5)
     if sendButton.draw(screen):
-        print("1")
         if checkPoints():
-            print("2")
-            drawResult(True)
+            while True:
+                pygame.time.delay(100)
+                drawResult(True)
+                time.sleep(5)
+                pygame.quit()
 
 while running:
 
