@@ -9,12 +9,14 @@ colors = {
     "white": (200,200,200),
     "black": (0,0,0),
     "gray": (100,100,100),
-    "win_bg": (8, 84, 84)
+    "win_bg": (8, 84, 84),
+    "loose_bg": (239, 28, 28)
 }
 
 screen = pygame.display.set_mode((550,700))
 running = True
 inGame = False
+isEnd = False
 
 pygame.display.set_caption("PyJa Cross", "https://cdn-icons-png.flaticon.com/512/124/124034.png?w=360")
 clock = pygame.time.Clock()
@@ -68,11 +70,15 @@ def drawSheet(selected):
 
             pygame.draw.rect(screen, colors["black"], (j * 50, i * 50, squareSide, squareSide), 2)
 
-
-def updateGrid(selected):
-    drawSheet(selected)
-    createButtons()
+def updateGrid(selected, end = False, win = False):
+    if not end:
+        drawSheet(selected)
+        isEnd = createButtons()
+    else:
+        isEnd = True
+        drawResult(win)
     pygame.display.update()
+    return isEnd
 
 def updateSelected(selected, direction):
 
@@ -203,6 +209,11 @@ def drawResult(win):
         text = titleFont.render("VITÓRIA", True, colors["white"])
         screen.blit(text, (130, 235))
         pygame.display.update()
+    else:
+        pygame.draw.rect(screen, colors["loose_bg"], pygame.Rect(50, 200, 450, 150))
+        text = titleFont.render("DERROTA", True, colors["white"])
+        screen.blit(text, (110,240))
+        pygame.display.update()
 
 def createButtons():
     buttonImg = pygame.image.load("images/send_button.png").convert_alpha()
@@ -210,11 +221,11 @@ def createButtons():
     sendButton = Button((200, 600), buttonImg, 0.5)
     if sendButton.draw(screen):
         if checkPoints():
-            while True:
-                pygame.time.delay(100)
-                drawResult(True)
-                time.sleep(5)
-                pygame.quit()
+            updateGrid(selected, True, True)
+            return True
+        else:
+            updateGrid(selected, True, False)
+            return True
 
 while running:
 
@@ -242,7 +253,7 @@ while running:
     if keys[pygame.K_RETURN]:
         selectedDirection = changeDirection(selected)
 
-    updateGrid(selected)
+    isEnd = updateGrid(selected, isEnd)
 
     clock.tick(15)
 
