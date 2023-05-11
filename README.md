@@ -7,7 +7,17 @@
 <h2>Para jogar o jogo você deve:</h2>
 <ul>
     <li>Ter o <a href="https://www.python.org/downloads/" target="_blank">python3</a> instalado e funcionando corretamente, com o comando PIP</li>
-    <li>Instalar a biblioteca <a href="https://www.pygame.org/news" target="_blank">pygame</a> utilizando o seguinte comando acima no terminal</li> 
+    <li>Instalar a biblioteca <a href="https://www.pygame.org/news" target="_blank">pygame</a> utilizando o comando acima no terminal</li> 
+</ul>
+
+<h2>Participantes:</h2>
+<ul>
+    <li><h3>Felipe Mariotto - 23.XXXXX-X</h3></li>
+    <li><h3>Gabriel Xavier - 23.XXXXX-X</h3></li>
+    <li><h3>Guilherme Santos - 23.XXXXX-X</h3></li>
+    <li><h3>Gustavo Perez - 23.XXXXX-X</h3></li>
+    <li><h3>Heitor Miranda - 23.XXXXX-X</h3></li>
+    <li><h3>Nicolas Mavroucakis - 23.XXXXX-X</h3></li>
 </ul>
 
 <h1>O jogo ainda está em desenvolvimento!</h1>
