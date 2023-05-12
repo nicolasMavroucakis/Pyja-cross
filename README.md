@@ -12,12 +12,12 @@
 
 <h2>Participantes:</h2>
 <ul>
-    <li><h3>Felipe Mariotto - 23.XXXXX-X</h3></li>
-    <li><h3>Gabriel Xavier - 23.XXXXX-X</h3></li>
-    <li><h3>Guilherme Santos - 23.XXXXX-X</h3></li>
-    <li><h3>Gustavo Perez - 23.XXXXX-X</h3></li>
-    <li><h3>Heitor Miranda - 23.XXXXX-X</h3></li>
-    <li><h3>Nicolas Mavroucakis - 23.XXXXX-X</h3></li>
+    <li><h4>Felipe Mariotto - 23.XXXXX-X</h4></li>
+    <li><h4>Gabriel Xavier - 23.XXXXX-X</h4></li>
+    <li><h4>Guilherme Santos - 23.XXXXX-X</h4></li>
+    <li><h4>Gustavo Perez - 23.XXXXX-X</h4></li>
+    <li><h4>Heitor Miranda - 23.XXXXX-X</h4></li>
+    <li><h4>Nicolas Mavroucakis - 23.XXXXX-X</h4></li>
 </ul>
 
 <h1>O jogo ainda está em desenvolvimento!</h1>

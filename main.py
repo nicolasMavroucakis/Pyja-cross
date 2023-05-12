@@ -1,6 +1,5 @@
 import pygame
 from misc import *
-import time
 
 pygame.init()
 
@@ -13,15 +12,18 @@ colors = {
     "loose_bg": (239, 28, 28)
 }
 
-screen = pygame.display.set_mode((1200,700))
+screen = pygame.display.set_mode((1280,720), pygame.RESIZABLE)
 running = True
 inGame = False
 isEnd = False
 isWin = False
 
+screenWidth = screen.get_width()
+screenHeight = screen.get_height()
+
 pygame.display.set_caption("PyJa Cross", "https://cdn-icons-png.flaticon.com/512/124/124034.png?w=360")
 clock = pygame.time.Clock()
-# icon = pygame.image.load("logo.png")
+# icon = pygame.image.load("images/logo.png")
 # pygame.display.set_icon(icon)
 
 fonts = {
@@ -30,40 +32,30 @@ fonts = {
     "hints": pygame.font.SysFont(None, 25)
 }
 
-squareSide = 60
 selected = (0,0)
 selectedDirection = "row"
 
 words = [
     { "word": "pygame", "direction": "row", "position": (9, 1), "hint": "Biblioteca para criar jogos em python." },
-    { "word": "joptionpane", "direction": "column", "position": (1, 4), "hint": "Pacote para interfaces gráficas em java." }
+    { "word": "joptionpane", "direction": "column", "position": (1, 4), "hint": "Pacote para interfaces gráficas em java." },
+    { "word": "print", "direction": "column", "position": (1, 9), "hint": "Comando para escrever algo na tela em python." }
 ]
-
-hints = [
-    "Biblioteca para criar jogos em python.",
-    "Pacote para interfaces gráficas em java."
-]
-
-# Table(words)
 
 table = Table(screen, words)
 blocks = table.create()
 
-# blocks = [
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "j", "written": "", "words": [1], "number": "2" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "o", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "p", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "t", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "i", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "o", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "n", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "p", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": True, "letter": "p", "written": "P", "words": [0], "number": "1" },{ "enabled": True, "letter": "y", "written": "Y" , "words": [0], "number": "" },{ "enabled": True, "letter": "g" , "written": "", "words": [0], "number": "" },{ "enabled": True, "letter": "a", "written": "", "words": [0, 1], "number": "" },{ "enabled": True, "letter": "m", "written": "", "words": [0], "number": "" },{ "enabled": True, "letter": "e", "written": "", "words": [0], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "n", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },],
-#     [{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": True, "letter": "e", "written": "", "words": [1], "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },{ "enabled": False, "letter": "" , "written": "", "words": None, "number": "" },]
-# ]
+def calcCenter(x, y):
+    xCenter = (x + (x + 50)) / 2 + 2
+    yCenter = (y + (y + 50)) / 2 + 2
+
+    return (xCenter, yCenter)
 
 def drawSheet(selected):
+
+    gameArea = calcPercent(50, screen.get_width())
+    squareSide = int(gameArea / 11)
+    print(squareSide)
+
     for i in range(len(blocks)):
         for j in range(len(blocks[i])):
             if blocks[i][j]["enabled"]:
@@ -73,16 +65,18 @@ def drawSheet(selected):
                     pygame.draw.rect(screen, colors["white"], (j * 50, i * 50, squareSide, squareSide))
 
                 letter = fonts["default"].render(blocks[i][j]["written"], True, colors["black"])
-                screen.blit(letter, (j * 50 + 15, i * 50 + 10))
+                letterPos = letter.get_rect(center=calcCenter(j * 50, i * 50))
+                screen.blit(letter, letterPos)
 
                 number = fonts["hints"].render(blocks[i][j]["number"], True, colors["black"])
                 screen.blit(number, (j * 50 + 3, i * 50 + 3))
+                pygame.draw.rect(screen, colors["black"], (j * 50, i * 50, squareSide, squareSide), 2)
             else:
                 pygame.draw.rect(screen, colors["gray"], (j * 50, i * 50, squareSide, squareSide))
 
-            pygame.draw.rect(screen, colors["black"], (j * 50, i * 50, squareSide, squareSide), 2)
 
 def updateGrid(selected, end = False, win = False):
+    Hints(screen, words)
     if not end:
         drawSheet(selected)
         isEnd = createButtons()
@@ -91,7 +85,6 @@ def updateGrid(selected, end = False, win = False):
         isWin = True
         isEnd = True
         drawResult(win)
-    # drawTexts()
     pygame.display.update()
 
     return isEnd, isWin
@@ -230,22 +223,14 @@ def drawResult(win):
 def createButtons():
     buttonImg = pygame.image.load("images/send_button.png").convert_alpha()
 
-    sendButton = Button((200, 600), buttonImg, 0.5)
-    if sendButton.draw(screen):
+    sendButton = Button(screen, (200, 600), buttonImg, 0.5)
+    if sendButton.draw():
         if checkPoints():
             updateGrid(selected, True, True)
             return True
         else:
             updateGrid(selected, True, False)
             return True
-
-# def drawTexts():
-#     textHeight = 30
-#     textStart = 50
-#     for i in range(len(hints)):
-#         text = fonts["hints"].render(f"{i + 1}. {hints[i]}", False, colors["white"])
-#         screen.blit(text, (600, textStart))
-#         textStart += textHeight
 
 while running:
 

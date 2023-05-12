@@ -1,18 +1,19 @@
 import pygame
 
 class Button():
-    def __init__(self, pos, image, scale):
+    def __init__(self, screen, pos, image, scale):
 
-        width = image.get_width()
-        height = image.get_height()
+        width = calcPercent(40, screen.get_width())
+        height = calcPercent(18, screen.get_height())
 
         self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
 
         self.clicked = False
+        self.screen = screen
 
-    def draw(self, screen):
+    def draw(self):
 
         action = False
         pos = pygame.mouse.get_pos()
@@ -25,18 +26,12 @@ class Button():
             if pygame.mouse.get_pressed()[0] == 0:
                 self.clicked = False
 
-        self.screen = screen
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
 
         return action
 
 class Table():
     def __init__(self, screen, words):
-
-        textHeight = 30
-        textStart = 50
-
-        font = pygame.font.SysFont(None, 25)
 
         table = [
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },],
@@ -74,16 +69,25 @@ class Table():
                 else:
                     y += 1
 
-            text = font.render(f"{i + 1}. {hint}", False, (200,200,200))
-            screen.blit(text, (600, textStart))
-            textStart += textHeight
-
+        self.screen = screen
         self.table = table
-
 
     def create(self):
         return self.table
     
+class Hints():
+    def __init__(self, screen, words):
+        textHeight = 30
+        textStart = calcVH(3, screen.get_height())
+
+        font = pygame.font.SysFont(None, 25)
+
+        for i in range(len(words)):
+            word = words[i]
+
+            text = font.render(f"{i + 1}. {word['hint']}", False, (200,200,200))
+            screen.blit(text, (600, textStart))
+            textStart += textHeight
 
 def splitWord(word):
     chars = []
@@ -91,6 +95,20 @@ def splitWord(word):
         chars.append(i)
 
     return chars
+
+def calcPercent(percent, val):
+    p1 = int(val / 100)
+    return percent * p1
+
+def calcVH(val, screen):
+    height = screen.get_height()
+    vh = int(height / 100)
+    return val * vh
+
+def calcVW(val, screen):
+    width = screen.get_width()
+    vw = int(width / 100)
+    return val * vw
 
 """
     words = [ word() ]
