@@ -9,7 +9,8 @@ colors = {
     "black": (0,0,0),
     "gray": (100,100,100),
     "win_bg": (8, 84, 84),
-    "loose_bg": (239, 28, 28)
+    "loose_bg": (239, 28, 28),
+    "background": (6, 17, 17)
 }
 
 screen = pygame.display.set_mode((1280,720), pygame.RESIZABLE)
@@ -44,9 +45,15 @@ words = [
 table = Table(screen, words)
 blocks = table.create()
 
-def calcCenter(x, y):
-    xCenter = (x + (x + 50)) / 2 + 2
-    yCenter = (y + (y + 50)) / 2 + 2
+def calcCenter(x, y, squareSide):
+    xCenter = (x + (x + squareSide)) / 2 + 2
+    yCenter = (y + (y + squareSide)) / 2 + 2
+
+    return (xCenter, yCenter)
+
+def calcCenter2(x, y, width, height):
+    xCenter = (x + (x + width)) / 2
+    yCenter = (y + (y + height)) / 2
 
     return (xCenter, yCenter)
 
@@ -54,35 +61,41 @@ def drawSheet(selected):
 
     gameArea = calcPercent(50, screen.get_width())
     squareSide = int(gameArea / 11)
-    print(squareSide)
+
+    marginLeft = calcVW(1,screen)
+    marginTop = calcVH(2,screen)
+
+    font = pygame.font.SysFont(None, calcVW(4, screen))
+    hintFont = pygame.font.SysFont(None, calcVH(3, screen))
 
     for i in range(len(blocks)):
         for j in range(len(blocks[i])):
             if blocks[i][j]["enabled"]:
-                if (j,i) == selected:
-                    pygame.draw.rect(screen, colors["red"], (j * 50, i * 50, squareSide, squareSide))
-                else:
-                    pygame.draw.rect(screen, colors["white"], (j * 50, i * 50, squareSide, squareSide))
 
-                letter = fonts["default"].render(blocks[i][j]["written"], True, colors["black"])
-                letterPos = letter.get_rect(center=calcCenter(j * 50, i * 50))
+
+                if (j,i) == selected:
+                    pygame.draw.rect(screen, colors["red"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
+                else:
+                    pygame.draw.rect(screen, colors["white"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
+
+                letter = font.render(blocks[i][j]["written"], True, colors["black"])
+                letterPos = letter.get_rect(center=calcCenter(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide))
                 screen.blit(letter, letterPos)
 
-                number = fonts["hints"].render(blocks[i][j]["number"], True, colors["black"])
-                screen.blit(number, (j * 50 + 3, i * 50 + 3))
-                pygame.draw.rect(screen, colors["black"], (j * 50, i * 50, squareSide, squareSide), 2)
+                number = hintFont.render(blocks[i][j]["number"], True, colors["black"])
+                screen.blit(number, (j * squareSide + marginLeft + 3, i * squareSide + marginTop + 3))
+                pygame.draw.rect(screen, colors["black"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide), 2)
             else:
-                pygame.draw.rect(screen, colors["gray"], (j * 50, i * 50, squareSide, squareSide))
+                pygame.draw.rect(screen, colors["gray"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
 
 
 def updateGrid(selected, end = False, win = False):
-    Hints(screen, words)
     if not end:
+        Hints(screen, words)
         drawSheet(selected)
-        isEnd = createButtons()
-        isWin = False
+        isEnd, isWin = createButtons()
     else:
-        isWin = True
+        isWin = win
         isEnd = True
         drawResult(win)
     pygame.display.update()
@@ -209,30 +222,50 @@ def checkPoints():
     return win
 
 def drawResult(win):
+    textBackground = pygame.Rect(100, 100, calcVW(50, screen), calcVH(30, screen))
+    textBackground.centerx = screen.get_width() // 2
+    textBackground.centery = screen.get_height() // 2
+
+    font = pygame.font.SysFont(None, calcVW(8, screen))
     if win:
-        pygame.draw.rect(screen, colors["win_bg"], pygame.Rect(100, 200, 350, 150))
-        text = fonts["title"].render("VITÓRIA", True, colors["white"])
-        screen.blit(text, (130, 235))
+
+        pygame.draw.rect(screen, colors["win_bg"], textBackground)
+
+        text = font.render("VITÓRIA", True, colors["white"])
+        textPos = text.get_rect(center = calcCenter2(textBackground.x, textBackground.y, calcVW(50, screen), calcVH(30, screen)))
+        screen.blit(text, textPos)
+
         pygame.display.update()
     else:
-        pygame.draw.rect(screen, colors["loose_bg"], pygame.Rect(50, 200, 450, 150))
-        text = fonts["title"].render("DERROTA", True, colors["white"])
-        screen.blit(text, (110,240))
+
+        pygame.draw.rect(screen, colors["loose_bg"], textBackground)
+
+        text = font.render("DERROTA", True, colors["white"])
+        textPos = text.get_rect(center = calcCenter2(textBackground.x, textBackground.y, calcVW(50, screen), calcVH(30, screen)))
+        screen.blit(text, textPos)
+
         pygame.display.update()
 
 def createButtons():
     buttonImg = pygame.image.load("images/send_button.png").convert_alpha()
 
-    sendButton = Button(screen, (200, 600), buttonImg, 0.5)
+    buttonLeft = calcVW(60, screen)
+    buttonTop = calcVH(80, screen)
+
+    sendButton = Button(screen, (buttonLeft, buttonTop), buttonImg, 0.5)
     if sendButton.draw():
         if checkPoints():
             updateGrid(selected, True, True)
-            return True
+            return True, True
         else:
             updateGrid(selected, True, False)
-            return True
+            return True, False
+        
+    return False, False
 
 while running:
+
+    screen.fill(colors["background"])
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

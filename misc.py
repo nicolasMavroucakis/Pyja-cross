@@ -4,7 +4,7 @@ class Button():
     def __init__(self, screen, pos, image, scale):
 
         width = calcPercent(40, screen.get_width())
-        height = calcPercent(18, screen.get_height())
+        height = calcPercent(30, screen.get_height())
 
         self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
         self.rect = self.image.get_rect()
@@ -77,17 +77,18 @@ class Table():
     
 class Hints():
     def __init__(self, screen, words):
-        textHeight = 30
-        textStart = calcVH(3, screen.get_height())
+        textHeight = calcVH(4, screen)
+        textLeft = calcVW(55, screen)
+        textTop = calcVH(4, screen)
 
-        font = pygame.font.SysFont(None, 25)
+        font = pygame.font.SysFont(None, calcVH(4, screen))
 
         for i in range(len(words)):
             word = words[i]
 
             text = font.render(f"{i + 1}. {word['hint']}", False, (200,200,200))
-            screen.blit(text, (600, textStart))
-            textStart += textHeight
+            screen.blit(text, (textLeft, textTop))
+            textTop += textHeight
 
 def splitWord(word):
     chars = []
