@@ -1,4 +1,5 @@
 import pygame
+import time
 
 class Button():
     def __init__(self, screen, pos, image, scale):
@@ -31,7 +32,7 @@ class Button():
         return action
 
 class Table():
-    def __init__(self, screen, words):
+    def __init__(self, screen, words, type):
 
         table = [
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },],
@@ -47,13 +48,12 @@ class Table():
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },]
         ]
 
-        for i in range(len(words)):
-            word = words[i]
+        for i in range(len(words[type])):
+            word = words[type][i]
 
-            splittedWord = splitWord(word["word"])
-            y,x = word["position"]
-            direction = word["direction"]
-            hint = word["hint"]
+            splittedWord = splitWord(word.word)
+            y,x = word.position
+            direction = word.direction
 
             table[y - 1][x - 1]["number"] = f"{i + 1}"
 
@@ -76,19 +76,26 @@ class Table():
         return self.table
     
 class Hints():
-    def __init__(self, screen, words):
+    def __init__(self, screen, words, type):
         textHeight = calcVH(4, screen)
         textLeft = calcVW(55, screen)
         textTop = calcVH(4, screen)
 
         font = pygame.font.SysFont(None, calcVH(4, screen))
 
-        for i in range(len(words)):
-            word = words[i]
+        for i in range(len(words[type])):
+            word = words[type][i]
 
-            text = font.render(f"{i + 1}. {word['hint']}", False, (200,200,200))
+            text = font.render(f"{i + 1}. {word.hint}", False, (200,200,200))
             screen.blit(text, (textLeft, textTop))
             textTop += textHeight
+
+class Word():
+    def __init__(self, word, direction, position, hint):
+        self.word = word
+        self.direction = direction
+        self.position = position
+        self.hint = hint
 
 def splitWord(word):
     chars = []
