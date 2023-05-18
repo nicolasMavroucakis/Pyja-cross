@@ -1,4 +1,4 @@
-import mysql.connector as mysql
+import pymysql as mysql
 
 connection = None
 cursor = None
@@ -23,8 +23,8 @@ def updateUserTime(userId, userTime, gameType):
         cursor.execute(insert)
         connection.commit()
     else:
-        __user_id, user_time = res[0]
-        if userTime > user_time:
+        __user_id, user_time, __gameMode = res[0]
+        if userTime < user_time:
             cursor.execute(update)
             connection.commit() 
 
@@ -40,6 +40,6 @@ def getUserId(userRa):
     cursor.execute(query)
 
     res = cursor.fetchall()
-    user_id, user_ra, user_password = res[0]
+    user_id, __user_ra, __user_password = res[0]
 
     return user_id

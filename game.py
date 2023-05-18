@@ -63,7 +63,7 @@ def run(gameType, userId, gameTypeId):
     #     { "word": "print", "direction": "column", "position": (1, 9), "hint": "Comando para escrever algo na tela em python." }
     # ]
 
-    table = Table(screen, words, type, squaresAmount)
+    table = Table(screen, words, type)
     blocks = table.create()
 
     seconds = 0
@@ -283,8 +283,6 @@ def run(gameType, userId, gameTypeId):
             timeTextPos = timeText.get_rect(center = calcCenter2(textBackground.x, textBackground.y, calcVW(50, screen), calcVH(30, screen) + calcVH(23, screen)))
             screen.blit(timeText, timeTextPos)
 
-            connection.updateUserTime(userId, seconds, gameTypeId)
-
         else:
 
             pygame.draw.rect(screen, colors["loose_bg"], textBackground)
@@ -315,6 +313,7 @@ def run(gameType, userId, gameTypeId):
         if sendButton.draw():
             if checkPoints():
                 updateGrid(selected, True, True)
+                connection.updateUserTime(userId, seconds, gameTypeId)
                 return True, True
             else:
                 updateGrid(selected, True, False)
@@ -367,10 +366,11 @@ def run(gameType, userId, gameTypeId):
 
         isEnd, isWin = updateGrid(selected, isEnd, isWin)
 
+        if not isEnd:
+            seconds = int(frameCount/1000 * 60)
+
         clock.tick(15)
 
-        if not isEnd:
-            seconds = frameCount // 15
 
     pygame.quit()
 
