@@ -1,9 +1,10 @@
 import pygame
 from misc import *
 import datetime
-import time
+import connection
+connection.connect()
 
-def run(gameType):
+def run(gameType, userId, gameTypeId):
 
     pygame.init()
 
@@ -13,11 +14,13 @@ def run(gameType):
         "red": (255,0,0),
         "white": (200,200,200),
         "black": (0,0,0),
-        "gray": (80,80,80,0),
+        "gray": (80,80,80),
         "win_bg": (8, 84, 84),
         "loose_bg": (239, 28, 28),
         "background": (6, 17, 17)
     }
+
+    squaresAmount = 11
 
     screen = pygame.display.set_mode((1280,720), pygame.RESIZABLE)
     running = True
@@ -60,7 +63,7 @@ def run(gameType):
     #     { "word": "print", "direction": "column", "position": (1, 9), "hint": "Comando para escrever algo na tela em python." }
     # ]
 
-    table = Table(screen, words, type)
+    table = Table(screen, words, type, squaresAmount)
     blocks = table.create()
 
     seconds = 0
@@ -84,7 +87,7 @@ def run(gameType):
     def drawSheet(selected):
 
         gameArea = calcPercent(50, screen.get_width())
-        squareSide = int(gameArea / 11)
+        squareSide = gameArea // squaresAmount
 
         marginLeft = calcVW(1,screen)
         marginTop = calcVH(2,screen)
@@ -280,6 +283,8 @@ def run(gameType):
             timeTextPos = timeText.get_rect(center = calcCenter2(textBackground.x, textBackground.y, calcVW(50, screen), calcVH(30, screen) + calcVH(23, screen)))
             screen.blit(timeText, timeTextPos)
 
+            connection.updateUserTime(userId, seconds, gameTypeId)
+
         else:
 
             pygame.draw.rect(screen, colors["loose_bg"], textBackground)
@@ -317,7 +322,11 @@ def run(gameType):
             
         return False, False
 
+    frameCount = 0
+
     while running:
+
+        frameCount += 1
 
         screen.fill(colors["background"])
 
@@ -361,9 +370,7 @@ def run(gameType):
         clock.tick(15)
 
         if not isEnd:
-            seconds += 1
-
-        time.sleep(0.001)
+            seconds = frameCount // 15
 
     pygame.quit()
 

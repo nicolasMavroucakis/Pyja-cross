@@ -1,9 +1,14 @@
 import game
+import connection
+connection.connect()
 
 type = int(input("\nEscolha o tipo: \n\n[1] - Python\n[2] - Java\n\n>>> ")) - 1
 
 types = [ "python", "java" ]
 
-print(f"\nJogo iniciando! Modo: {types[type].capitalize()}\n")
+userRa = input("\nSeu RA: ")
+userId = connection.getUserId(userRa)
 
-game.run(types[type])
+print(f"\n\nJogo iniciando! Modo: {types[type].capitalize()}\nRA: {userRa}\nID: {userId}")
+
+game.run(types[type], userId, type)

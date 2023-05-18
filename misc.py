@@ -31,8 +31,22 @@ class Button():
         return action
 
 class Table():
-    def __init__(self, screen, words, type):
+    def __init__(self, screen, words, type, squaresAmount):
 
+        base = { "enabled": False, "letter": "", "written": "", "words": [], "number": "" }
+
+        def createTable():
+            tbl = []
+            for _ in range(squaresAmount):
+                row = []
+                for _ in range(squaresAmount):
+                    row.append(base)
+
+                tbl.append(row)
+
+            return tbl
+
+        _table = createTable()
         table = [
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },],
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },],
@@ -54,14 +68,15 @@ class Table():
             y,x = word.position
             direction = word.direction
 
+
             table[y - 1][x - 1]["number"] = f"{i + 1}"
+            table[y - 1][x - 1]["words"].append(i)
 
             for letter in splittedWord:
                 block = table[y - 1][x - 1]
 
                 block["letter"] = letter
                 block["enabled"] = True
-                block["words"].append(i)
 
                 if direction == "row":
                     x += 1
