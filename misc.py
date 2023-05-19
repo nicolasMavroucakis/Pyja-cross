@@ -85,7 +85,7 @@ class Hints():
         for i in range(len(words[type])):
             word = words[type][i]
 
-            text = font.render(f"{i + 1}. {word.hint}", False, (200,200,200))
+            text = font.render(f"{i + 1}. {word.hint}", False, (5,5,5))
             screen.blit(text, (textLeft, textTop))
             textTop += textHeight
 
@@ -95,6 +95,13 @@ class Word():
         self.direction = direction
         self.position = position
         self.hint = hint
+
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
 
 def splitWord(word):
     chars = []

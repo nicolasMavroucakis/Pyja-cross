@@ -14,7 +14,7 @@ def run(gameType, userId, gameTypeId):
         "red": (255,0,0),
         "white": (200,200,200),
         "black": (0,0,0),
-        "gray": (80,80,80),
+        "gray": (87,87,87,60),
         "win_bg": (8, 84, 84),
         "loose_bg": (239, 28, 28),
         "background": (6, 17, 17)
@@ -115,9 +115,9 @@ def run(gameType, userId, gameTypeId):
                     pygame.draw.rect(screen, colors["black"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide), 2)
                 else:
                     if not transparentEmptyBackground:
-                        pygame.draw.rect(screen, colors["gray"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
-                    
-
+                        sfc = pygame.Surface(pygame.Rect(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide).size, pygame.SRCALPHA)
+                        pygame.draw.rect(sfc, colors["gray"], sfc.get_rect())
+                        screen.blit(sfc,(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
 
     def updateGrid(selected, end = False, win = False):
         if not end:
@@ -327,8 +327,10 @@ def run(gameType, userId, gameTypeId):
 
         frameCount += 1
 
-        screen.fill(colors["background"])
-
+        bg = Background("./images/bg.png",[500,0])
+        screen.fill([255,255,255])
+        screen.blit(bg.image, bg.rect)
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
