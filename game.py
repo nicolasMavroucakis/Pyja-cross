@@ -119,7 +119,12 @@ def run(gameType, userId, gameTypeId):
                         pygame.draw.rect(sfc, colors["gray"], sfc.get_rect())
                         screen.blit(sfc,(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
 
-    def updateGrid(selected, end = False, win = False):
+    def drawTimer(seconds):
+        font = pygame.font.SysFont(None, calcVH(4, screen))
+        text = font.render(convertTime(seconds), True, colors["black"])
+        screen.blit(text, (calcVW(67, screen), calcVH(95, screen), calcVW(5, screen), calcVH(5, screen)))
+
+    def updateGrid(selected, end = False, win = False, seconds = 0):
         if not end:
             bg = Background("./images/bg.png",[500,0])
             screen.fill([255,255,255])
@@ -127,6 +132,7 @@ def run(gameType, userId, gameTypeId):
             
             Hints(screen, words, type)
             drawSheet(selected)
+            drawTimer(seconds)
             isEnd, isWin = createButtons()
 
         else:
@@ -369,7 +375,7 @@ def run(gameType, userId, gameTypeId):
         if keys[pygame.K_RETURN]:
             selectedDirection = changeDirection(selected)
 
-        isEnd, isWin = updateGrid(selected, isEnd, isWin)
+        isEnd, isWin = updateGrid(selected, isEnd, isWin, int(frameCount/1000 * 60))
 
         if not isEnd:
             seconds = int(frameCount/1000 * 60)
