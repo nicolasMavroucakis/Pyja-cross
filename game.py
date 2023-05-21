@@ -121,12 +121,19 @@ def run(gameType, userId, gameTypeId):
 
     def updateGrid(selected, end = False, win = False):
         if not end:
+            bg = Background("./images/bg.png",[500,0])
+            screen.fill([255,255,255])
+            screen.blit(bg.image, bg.rect)
+            
             Hints(screen, words, type)
             drawSheet(selected)
             isEnd, isWin = createButtons()
+
         else:
             isWin = win
             isEnd = True
+            
+            screen.fill([255,255,255])
             drawResult(win)
         pygame.display.update()
 
@@ -326,10 +333,6 @@ def run(gameType, userId, gameTypeId):
     while running:
 
         frameCount += 1
-
-        bg = Background("./images/bg.png",[500,0])
-        screen.fill([255,255,255])
-        screen.blit(bg.image, bg.rect)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

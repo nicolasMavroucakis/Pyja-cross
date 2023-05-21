@@ -40,6 +40,17 @@ def getUserId(userRa):
     cursor.execute(query)
 
     res = cursor.fetchall()
-    user_id, __user_ra, __user_password = res[0]
+    if len(res) > 0:
+        user_id, __user_ra, __user_password = res[0]
+    else:
+        insert = (f"INSERT INTO users(user_ra,user_password) VALUES({userRa},'Teste')")
+        connection.commit()
+        query = (f"SELECT * FROM users WHERE user_ra={userRa}")
+        cursor.execute(insert)
+
+        cursor.execute(insert)
+        res = cursor.fetchall()
+        print(res)
+        user_id, __user_ra, __user_password = res[0]
 
     return user_id
