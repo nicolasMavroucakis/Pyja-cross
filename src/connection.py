@@ -29,13 +29,13 @@ def updateUserTime(userId, userTime, gameType):
             connection.commit() 
 
 def getTimes(gameType):
-    query = (f"SELECT * FROM times WHERE game={gameType}")
-    cursor.execute(query)
+    sql = "SELECT * FROM times WHERE game = %i"
+    cursor.execute(sql, (gameType))
 
     res = cursor.fetchall()
     return res
 
-def getUserId(userRa):
+# def getUserId(userRa):
     query = (f"SELECT * FROM users WHERE user_ra='{userRa}'")
     cursor.execute(query)
 
@@ -43,6 +43,7 @@ def getUserId(userRa):
     if len(res) > 0:
         user_id, __user_ra, __user_password = res[0]
     else:
+        insertSql = "INSERT INTO users(user_ra,user_passwor)"
         insert = (f"INSERT INTO users(user_ra,user_password) VALUES({userRa},'Teste')")
         connection.commit()
         query = (f"SELECT * FROM users WHERE user_ra={userRa}")
@@ -54,3 +55,43 @@ def getUserId(userRa):
         user_id, __user_ra, __user_password = res[0]
 
     return user_id
+
+def login(ra, password):
+    sql = "SELECT * FROM users WHERE user_ra = %s AND user_password = %s"
+    cursor.execute(sql, (ra, password))
+
+    res = cursor.fetchone()
+
+    if res:
+        result = {
+            "user_id": res[0],
+            "user_ra": res[2],
+            "user_name": res[3],
+            "auth": True
+        }
+
+    else:
+        result = {
+            "auth": False
+        }
+
+    return result
+
+def signup(ra, password, name):
+    querySql = "SELECT * FROM users WHERE user_ra = %s"
+    insertSql = "INSERT INTO users(user_ra, user_password, user_name) VALUES (%s, %s, %s)"
+
+    cursor.execute(querySql,(ra))
+    res = cursor.fetchone()
+
+    if res:
+        result = { "approved": False }
+    else:
+        cursor.execute(insertSql,(ra, password, name))
+        connection.commit()
+
+        userId = cursor.lastrowid
+
+        result = { "approved": True, "user_id": userId }
+
+    return result

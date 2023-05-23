@@ -85,7 +85,7 @@ class Hints():
         for i in range(len(words[type])):
             word = words[type][i]
 
-            text = font.render(f"{i + 1}. {word.hint}", False, (5,5,5))
+            text = font.render(f"{i + 1}. {word.hint}", False, (200,200,200))
             screen.blit(text, (textLeft, textTop))
             textTop += textHeight
 

@@ -1,10 +1,10 @@
 import pygame
-from misc import *
+from src.misc import *
 import datetime
-import connection
+import src.connection as connection
 connection.connect()
 
-def run(gameType, userId, gameTypeId):
+def run(gameType, userInfo, gameTypeId):
 
     pygame.init()
 
@@ -121,14 +121,12 @@ def run(gameType, userId, gameTypeId):
 
     def drawTimer(seconds):
         font = pygame.font.SysFont(None, calcVH(4, screen))
-        text = font.render(convertTime(seconds), True, colors["black"])
+        text = font.render(convertTime(seconds), True, colors["white"])
         screen.blit(text, (calcVW(67, screen), calcVH(95, screen), calcVW(5, screen), calcVH(5, screen)))
 
     def updateGrid(selected, end = False, win = False, seconds = 0):
+        screen.fill(colors["background"])
         if not end:
-            bg = Background("./images/bg.png",[500,0])
-            screen.fill([255,255,255])
-            screen.blit(bg.image, bg.rect)
             
             Hints(screen, words, type)
             drawSheet(selected)
@@ -284,6 +282,8 @@ def run(gameType, userId, gameTypeId):
         font = pygame.font.SysFont(None, calcVW(8, screen))
         timeFont = pygame.font.SysFont(None, calcVW(5, screen))
 
+        screen.fill(colors["background"])
+
         if win:
 
             pygame.draw.rect(screen, colors["win_bg"], textBackground)
@@ -326,7 +326,7 @@ def run(gameType, userId, gameTypeId):
         if sendButton.draw():
             if checkPoints():
                 updateGrid(selected, True, True)
-                connection.updateUserTime(userId, seconds, gameTypeId)
+                connection.updateUserTime(userInfo["user_id"], seconds, gameTypeId)
                 return True, True
             else:
                 updateGrid(selected, True, False)
