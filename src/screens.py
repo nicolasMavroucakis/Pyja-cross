@@ -14,7 +14,8 @@ def open_login(window = None):
         window.destroy()
 
     root = Tk()
-    root.title("Login")
+    root.iconbitmap("images/logo.ico")
+    root.title("PyJa Cross")
     root.geometry("925x500+300+200")
     root.configure(bg = "#fff")
     root.resizable(False,False)
@@ -117,7 +118,8 @@ def open_signin(window = None):
         window.destroy()
 
     root = Tk()
-    root.title("Cadastro")
+    root.iconbitmap("images/logo.ico")
+    root.title("PyJa Cross")
     root.geometry("925x500+300+200")
     root.configure(bg = "#fff")
     root.resizable(False,False)
@@ -242,15 +244,11 @@ def open_choose_screen(loginResult, window = None):
 
 
     root = Tk()
-
-    def quit():
-        root.quit
-
-    root.title("Modo de Jogo")
+    root.iconbitmap("images/logo.ico")
+    root.title("PyJa Cross")
     root.geometry("925x500+300+200")
     root.configure(bg = "#fff")
     root.resizable(False, False)
-    root.bind("<Control-c>",quit)
 
 
     img = ImageTk.PhotoImage(Image.open('images/login.png').resize((350, 350)))
