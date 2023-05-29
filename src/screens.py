@@ -1,11 +1,13 @@
-import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 from PIL import Image, ImageTk
 from customtkinter import *
+import datetime
 
 import src.connection as connection
 import src.game as game
+from src.misc import *
 
 colors = {
     "background": "#2B2D2E",
@@ -264,19 +266,77 @@ def open_main_screen():
     buttonsFrame = Frame(root, width=300, height=350, bg="#2B2D2E")
     buttonsFrame.place(x = 10, y = 150)
 
-    def play():
-        open_login(root)
-
-    def rank():
-        print("RANK!")
-
-    playButton = CTkButton(buttonsFrame, text="JOGAR", command=play, width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
+    playButton = CTkButton(buttonsFrame, text="JOGAR", command=lambda: open_login(root), width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
     playButton.place(x = 0, y = 60)
 
-    rankButton = CTkButton(buttonsFrame, text="RANKING", command=rank, width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
+    rankButton = CTkButton(buttonsFrame, text="RANKING", command=lambda: open_ranking(root), width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
     rankButton.place(x = 0, y = 170)
 
     img = ImageTk.PhotoImage(Image.open('images/_logo.png').resize((350, 350)))
     Label(root, image=img, bg="#2B2D2E").place(x=400,y=70)
+
+    root.mainloop()
+
+def open_ranking(window = None):
+    
+    if window:
+        window.destroy()
+
+    root = Tk()
+    root.title("Tela de Ranks")
+    root.geometry("925x500+300+200")
+
+    root.resizable(0,0)
+    root.config(bg=colors['background'])
+
+    def generateRanks():
+        times = connection.getTimes()
+        ranks = []
+
+        for i in range(len(times)):
+            # userId, time, game, ra, password, name 
+            #   0      1     2    3      4       5
+
+            rank = RankPosition(i + 1, times[i][5], datetime.timedelta(seconds=times[i][1]))
+            ranks.append(rank)
+
+        return ranks
+
+    def exibirRank():
+        
+        rank = generateRanks()
+
+        # table = ttk.Treeview(root, style="Custom.Treeview")
+        # table.grid(column=0, row=5)
+        # table["columns"] = ("Posição", "RA", "Tempo")
+        # table.column("RA", width=50)
+        # table.column("Tempo", width=50)
+        # table.column("Posição", width=50)
+        # table.heading("#0", text="Posição")
+        # table.heading("#1", text="RA")
+        # table.heading("#2", text="Tempo")
+
+        frame = Frame(root, width=500, height=500, bg=colors["background"])
+        frame.place(anchor="center", relx=.5, rely=.5)
+
+        text = ""
+        for i in range(len(rank)):
+            text += f"{rank[i].position}° - {rank[i].name} {rank[i].time}\n"
+        # table.insert("", "end", values=(j,t))
+
+        label = Label(frame, text= text, fg = '#3771A1', justify=CENTER, bg = colors["background"], font = ('Microsoft YaHei UI Light', 20), anchor='e')
+        label.pack(side=TOP, pady=20)
+        # label.place(anchor='e', relx=.5, rely=.5, y = 20, pady=20)
+
+    # Definindo o estilo personalizado para a tabela
+    style = ttk.Style()
+    style.configure("Custom.Treeview",background="white",foreground="#3771A1",fieldbackground="#393E46")
+
+    
+    textofinalizar = Label(root,text="Jogo Finalizado!! :)", width=30, justify=CENTER, fg="#3771A1", bg=colors["background"], font=("Georgia",18), )
+    textofinalizar.pack(padx=50, pady=25)
+
+    botao = CTkButton(root, text="Visualizar Ranking", width=250, height=50, font=("Georgia",18), command=exibirRank, text_color="#fff", fg_color= "#3771A1", bg_color=colors["background"])
+    botao.pack()
 
     root.mainloop()
