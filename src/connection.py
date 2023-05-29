@@ -28,9 +28,16 @@ def updateUserTime(userId, userTime, gameType):
             cursor.execute(update)
             connection.commit() 
 
-def getTimes(gameType):
-    sql = "SELECT * FROM times WHERE game = %i"
-    cursor.execute(sql, (gameType))
+def getTimes():
+    """
+    SELECT * 
+    FROM times
+    WHERE game = 0
+    INNER JOIN users
+    ON times.user_id = users.user_id
+    """
+    sql = "SELECT * FROM times INNER JOIN users USING (user_id) WHERE game = 0 ORDER BY time"
+    cursor.execute(sql)
 
     res = cursor.fetchall()
     return res

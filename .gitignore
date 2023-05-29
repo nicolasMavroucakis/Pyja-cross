@@ -4,3 +4,6 @@ teste.py
 dist
 build
 main.spec
+*.zip
+__fodasse.py
+teste.py
