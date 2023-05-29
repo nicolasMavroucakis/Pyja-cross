@@ -104,10 +104,11 @@ class Background(pygame.sprite.Sprite):
         self.rect.left, self.rect.top = location
 
 class RankPosition():
-    def __init__(self, position, name, time):
+    def __init__(self, position, name, time, color):
         self.position = position
         self.name = name
         self.time = time
+        self.color = color
 
 def splitWord(word):
     chars = []

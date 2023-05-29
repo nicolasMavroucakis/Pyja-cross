@@ -283,21 +283,30 @@ def open_ranking(window = None):
         window.destroy()
 
     root = Tk()
-    root.title("Tela de Ranks")
     root.geometry("925x500+300+200")
-
-    root.resizable(0,0)
+    root.iconbitmap("images/logo.ico")
+    root.title("PyJa Cross")
+    root.resizable(False, False)
     root.config(bg=colors['background'])
 
     def generateRanks():
         times = connection.getTimes()
         ranks = []
 
+        flag = True
+
         for i in range(len(times)):
             # userId, time, game, ra, password, name 
             #   0      1     2    3      4       5
 
-            rank = RankPosition(i + 1, times[i][5], datetime.timedelta(seconds=times[i][1]))
+            if flag:
+                color = "#414C55"
+            else:
+                color = "#313539"
+
+            flag = not flag
+
+            rank = RankPosition(i + 1, times[i][5], datetime.timedelta(seconds=times[i][1]), color)
             ranks.append(rank)
 
         return ranks
@@ -306,37 +315,50 @@ def open_ranking(window = None):
         
         rank = generateRanks()
 
-        # table = ttk.Treeview(root, style="Custom.Treeview")
-        # table.grid(column=0, row=5)
-        # table["columns"] = ("Posição", "RA", "Tempo")
-        # table.column("RA", width=50)
-        # table.column("Tempo", width=50)
-        # table.column("Posição", width=50)
-        # table.heading("#0", text="Posição")
-        # table.heading("#1", text="RA")
-        # table.heading("#2", text="Tempo")
+        flag = True
 
-        frame = Frame(root, width=500, height=500, bg=colors["background"])
-        frame.place(anchor="center", relx=.5, rely=.5)
+        s = ttk.Style()
+        s.theme_use("clam")
 
-        text = ""
+        s.map("Treeview", background=[('disabled','#000'), ('active','#fff')],foreground=[('disabled','#000')])
+        s.configure("Treeview", rowheight=35, fieldbackground=colors["background"], borderwidth=0, font=("Arial",12))
+        s.configure("Treeview.Heading", background=colors["theme"], borderwidth=0, font=("Arial",16), foreground="white")
+
+        columns = ('position','name','time')
+
+        tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2)
+
+        tree.heading('position', text='POSIÇÃO')
+        tree.heading('name', text='NOME')
+        tree.heading('time', text='TEMPO')
+
+        tree.column('position', anchor=CENTER, width=200)
+        tree.column('name', anchor=CENTER, width=300)
+        tree.column('time', anchor=CENTER, width=200)
+
+        tree.bind('<Motion>', 'break')
+
+        positions = []
+
         for i in range(len(rank)):
-            text += f"{rank[i].position}° - {rank[i].name} {rank[i].time}\n"
-        # table.insert("", "end", values=(j,t))
 
-        label = Label(frame, text= text, fg = '#3771A1', justify=CENTER, bg = colors["background"], font = ('Microsoft YaHei UI Light', 20), anchor='e')
-        label.pack(side=TOP, pady=20)
-        # label.place(anchor='e', relx=.5, rely=.5, y = 20, pady=20)
+            positions.append((f'{rank[i].position}°', f'{rank[i].name}', f'{rank[i].time}'))
 
-    # Definindo o estilo personalizado para a tabela
-    style = ttk.Style()
-    style.configure("Custom.Treeview",background="white",foreground="#3771A1",fieldbackground="#393E46")
+        for i in positions:
 
-    
-    textofinalizar = Label(root,text="Jogo Finalizado!! :)", width=30, justify=CENTER, fg="#3771A1", bg=colors["background"], font=("Georgia",18), )
-    textofinalizar.pack(padx=50, pady=25)
+            if flag:
+                tags = ("oddrow")
+            else:
+                tags = ("evenrow")
 
-    botao = CTkButton(root, text="Visualizar Ranking", width=250, height=50, font=("Georgia",18), command=exibirRank, text_color="#fff", fg_color= "#3771A1", bg_color=colors["background"])
-    botao.pack()
+            flag = not flag
+            tree.insert('', END, values=i, tags=tags)
+
+        tree.tag_configure("oddrow",background="#414C55", foreground="white")
+        tree.tag_configure("evenrow",background="#313539", foreground="white")
+
+        tree.pack( anchor='c', pady=30)
+
+    exibirRank()
 
     root.mainloop()

@@ -6,4 +6,4 @@ build
 main.spec
 *.zip
 __fodasse.py
-teste.py
+install.bat
