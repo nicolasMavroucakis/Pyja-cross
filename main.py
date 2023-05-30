@@ -1,2 +1,2 @@
 import src.screens as screens
-screens.open_main_screen()
+screens.open_login()

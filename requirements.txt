@@ -1,0 +1,5 @@
+pymysql
+pygame
+tk
+customtkinter
+pillow

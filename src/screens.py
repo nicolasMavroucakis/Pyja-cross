@@ -63,7 +63,7 @@ def open_login(window = None):
         if len(ra) == 10:
             loginResult = connection.login(ra, senha_usuario)
             if loginResult["auth"]:
-                open_choose_screen(loginResult, root)
+                open_main_screen(loginResult, root)
             else:
                 messagebox.showinfo("Erro","RA e/ou Senha inválidos")
         else:
@@ -116,9 +116,6 @@ def open_signin(window = None):
     Frame(frame, width = 295, height = 2, bg =colors["white"]).place(x = 25, y =107)
 
     #Colocando Senha na tela
-    def on_enter(e):
-        senha.delete(0, 'end')
-
 
     senha = StringVar()
     senha = CTkEntry(frame,width = 250, text_color = "white", fg_color = colors["background"], font = ('Microsoft YaHei UI Light', 14), show="*", border_width=0, placeholder_text="Senha")
@@ -187,12 +184,18 @@ def open_choose_screen(loginResult, window = None):
 
         game.run(gameType, loginResult, gameTypeId)
 
-    Button(root, width=30, height=3, font=('microsoft Yahei UILight',15), text="PYTHON", bg="#3771A1", fg=colors["white"], border=0,command=lambda: open_game("python", root, 0)).place(x=150, y = 350)
-    Button(root, width=30, height=3, font=('microsoft Yahei UILight',15), text="JAVA", bg="#3771A1", fg=colors["white"], border=0, command=lambda: open_game("java", root, 1)).place(x=500, y=350)
+    CTkButton(root, width=300, height=100, font=('microsoft Yahei UILight',26, "bold"), text="PYTHON", fg_color=colors["theme"], text_color=colors["white"], corner_radius=10, command=lambda: open_game("python", root, 0)).place(x=150, y=350)
+    CTkButton(root, width=300, height=100, font=('microsoft Yahei UILight',26, "bold"), text="JAVA", fg_color=colors["theme"], text_color=colors["white"], corner_radius=10, command=lambda: open_game("java", root, 1)).place(x=500,y=350)
+    # Button(root, width=30, height=3, font=('microsoft Yahei UILight',15), text="PYTHON", bg="#3771A1", fg=colors["white"], border=0,command=lambda: open_game("python", root, 0)).place(x=150, y = 350)
+    # Button(root, width=30, height=3, font=('microsoft Yahei UILight',15), text="JAVA", bg="#3771A1", fg=colors["white"], border=0, command=lambda: open_game("java", root, 1)).place(x=500, y=350)
 
     root.mainloop()
 
-def open_main_screen():
+def open_main_screen(loginResult, window = None):
+
+    if window:
+        window.destroy()
+
     root = Tk()
     root.iconbitmap("images/logo.ico")
     root.title("PyJa Cross")
@@ -208,10 +211,10 @@ def open_main_screen():
     buttonsFrame = Frame(root, width=300, height=350, bg="#2B2D2E")
     buttonsFrame.place(x = 10, y = 150)
 
-    playButton = CTkButton(buttonsFrame, text="JOGAR", command=lambda: open_login(root), width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
+    playButton = CTkButton(buttonsFrame, text="JOGAR", command=lambda: open_choose_screen(loginResult, root), width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
     playButton.place(x = 0, y = 60)
 
-    rankButton = CTkButton(buttonsFrame, text="RANKING", command=lambda: open_ranking(root), width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
+    rankButton = CTkButton(buttonsFrame, text="RANKING", command=lambda: open_ranking(root, loginResult), width=300, height=70, fg_color="#3771A1", corner_radius=10, text_color="#fff", font = ('sans-serif', 23, 'bold'))
     rankButton.place(x = 0, y = 170)
 
     img = ImageTk.PhotoImage(Image.open('images/_logo.png').resize((350, 350)))
@@ -219,7 +222,7 @@ def open_main_screen():
 
     root.mainloop()
 
-def open_ranking(window = None):
+def open_ranking(window = None, loginResult = None):
     
     if window:
         window.destroy()
@@ -302,5 +305,8 @@ def open_ranking(window = None):
         tree.pack( anchor='c', pady=30)
 
     exibirRank()
+
+    returnButton = CTkButton(root, width=200, height=35, text="TELA INICIAL", bg_color=colors["background"], fg_color=colors["theme"], text_color=colors["white"], command=lambda: open_main_screen(loginResult, root))
+    returnButton.pack(anchor='c')
 
     root.mainloop()

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int NOT NULL AUTO_INCREMENT,
   `user_ra` varchar(10) DEFAULT NULL,
   `user_password` varchar(30) DEFAULT NULL,
+  `user_name` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_ra` (`user_ra`)
 );

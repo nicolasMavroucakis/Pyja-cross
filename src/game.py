@@ -2,6 +2,7 @@ import pygame
 from src.misc import *
 import datetime
 import src.connection as connection
+import src.screens as screens
 connection.connect()
 
 def run(gameType, userInfo, gameTypeId):
@@ -41,12 +42,6 @@ def run(gameType, userInfo, gameTypeId):
     icon = pygame.image.load("images/logo.png")
     pygame.display.set_icon(icon)
 
-    fonts = {
-        "default": pygame.font.SysFont(None, 50),
-        "title": pygame.font.SysFont(None, 100),
-        "hints": pygame.font.SysFont(None, 25)
-    }
-
     selected = (0,0)
     selectedDirection = "row"
 
@@ -57,35 +52,34 @@ def run(gameType, userInfo, gameTypeId):
     }
     squares = []
 
-    # words = [
-    #     { "word": "pygame", "direction": "row", "position": (9, 1), "hint": "Biblioteca para criar jogos em python." },
-    #     { "word": "joptionpane", "direction": "column", "position": (1, 4), "hint": "Pacote para interfaces gráficas em java." },
-    #     { "word": "print", "direction": "column", "position": (1, 9), "hint": "Comando para escrever algo na tela em python." }
-    # ]
-
+    # Criar a tabela de jogo
     table = Table(screen, words, type)
     blocks = table.create()
 
     seconds = 0
 
+    # Calcula o centro do quadrado
     def calcCenter(x, y, squareSide):
         xCenter = (x + (x + squareSide)) / 2 + 2
         yCenter = (y + (y + squareSide)) / 2 + 2
 
         return (xCenter, yCenter)
 
+    # Calcula o centro geral
     def calcCenter2(x, y, width, height):
         xCenter = (x + (x + width)) / 2
         yCenter = (y + (y + height)) / 2
 
         return (xCenter, yCenter)
 
+    # Transforma os segundos em horas, minutos e segundos
     def convertTime(seconds):
         time = str(datetime.timedelta(seconds=seconds))
         return time
 
     def drawSheet(selected):
 
+        # Área do jogo
         gameArea = calcPercent(50, screen.get_width())
         squareSide = gameArea // squaresAmount
 
@@ -312,6 +306,7 @@ def run(gameType, userInfo, gameTypeId):
 
         if closeButton.draw():
             pygame.quit()
+            screens.open_main_screen(loginResult=userInfo["user_id"])
 
         pygame.display.update()
 
