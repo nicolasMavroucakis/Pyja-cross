@@ -7,7 +7,7 @@ import datetime
 
 import src.connection as connection
 import src.game as game
-from src.misc import *
+import src.misc as misc
 
 colors = {
     "background": "#2B2D2E",
@@ -45,39 +45,13 @@ def open_login(window = None):
     heading.place(x =130, y=5)
 
     #Colocando o nome Usuario na tela
-
-    def on_enter(e):
-        user.delete(0, 'end')
-
-    def on_leave(e):
-        name =user.get()
-
-        if name == '':
-            user.insert(0, 'RA')
-
-    user = Entry(frame, width = 25, fg = colors["white"], border  = 0, bg = colors["background"], font = ('Microsoft YaHei UI Light', 11))
-    user.place(x =30, y = 80)
-    user.insert(0, 'RA')
-    user.bind('<FocusIn>', on_enter)
-    user.bind('<FocusOut>', on_leave)
+    user = CTkEntry(frame, width = 250, text_color = "white", border_width  = 0, bg_color=colors["background"], fg_color = colors["background"], font = ('Microsoft YaHei UI Light', 14), placeholder_text="RA")
+    user.place(x =25, y = 80)
 
     Frame(frame, width = 295, height = 2, bg =colors["white"]).place(x = 25, y =107)
 
-    #Colocando Senha na tela
-    def on_enter(e):
-        senha.delete(0, 'end')
-
-    def on_leave(e):    
-        name = senha.get()
-        if name == '':
-            senha.insert(0, 'Senha')
-
-    senha = StringVar()
-    senha = Entry(frame,width = 25, fg = colors["white"], border  = 0, bg = colors["background"], font = ('Microsoft YaHei UI Light', 11))
-    senha.insert(0, 'Senha')
-    senha.place(x =30, y = 150)
-    senha.bind('<FocusIn>', on_enter)
-    senha.bind('<FocusOut>', on_leave)
+    senha = CTkEntry(frame,width = 250, bg_color=colors["background"], text_color = "white", fg_color = colors["background"], font = ('Microsoft YaHei UI Light', 14), show="*", border_width=0, placeholder_text="Senha")
+    senha.place(x =25, y = 150)
 
     Frame(frame, width = 295, height = 2, bg =colors["white"]).place(x = 25, y =177)
 
@@ -95,30 +69,15 @@ def open_login(window = None):
         else:
             messagebox.showinfo("Erro", "RA inválido")
 
-
-        # sqlLogin = "SELECT * FROM users WHERE user_ra = %s AND user_password = %s;"
-        # if len(ra) == 10:
-        #     cursor.execute(sqlLogin,(ra,senha_usuario))
-        #     resultLogin = cursor.fetchone()
-        # else:
-        #     messagebox.showinfo("Erro","Erro: RA inválido")
-            
-        # if resultLogin:
-        #     messagebox.showinfo("Sucesso","Login Efetuado com sucesso")
-        # else:
-        #     messagebox.showinfo("Erro", "RA ou Senha inválido")
-
-        # connection.commit()
-        # cursor.close()
-
     #Criando botao de login e area para pessoas que nao possuem cadastro
 
 
     CTkButton(frame, width=270, height=40, text='Login',bg_color=colors["background"], fg_color=colors["theme"], corner_radius=5, text_color="white", command=func_login).place(x=35, y=204)
+    # Button(frame, width =39, pady = 7, text = 'Login', bg = '#3771A1', fg = 'white', border = 0,command=func_login).place(x =35, y =204)
     label = Label(frame, text= "Não possui uma cadastro?", fg = colors["white"], bg = colors["background"], font = ('Microsoft YaHei UI Light', 10))
     label.place(x = 58, y = 270)
 
-    sign_up = Button( frame, width = 0, text = 'Cadastre-se', border = 0, bg = colors["background"], cursor = 'hand2',fg = colors["theme"],font = ('Microsoft YaHei UI Light', 10),command=lambda: open_signin(root))
+    sign_up = Button( master=frame, width = 0, text = 'Cadastre-se', border = 0, bg = colors["background"], cursor = 'hand2',fg = colors["theme"],font = ('Microsoft YaHei UI Light', 10),command=lambda: open_signin(root))
     sign_up.place(x = 220, y = 268)
 
     # inicia o loop principal do tkinte
@@ -191,23 +150,6 @@ def open_signin(window = None):
         else:
             messagebox.showinfo("Erro", "RA inálido")
 
-    #     sql = "SELECT * FROM users WHERE user_ra = %s;"
-    #     if len(ra) == 10:
-    #         cursor.execute(sql,(ra))
-    #         result = cursor.fetchone()
-    #     else:
-    #         messagebox.showinfo("Erro","Erro: RA inválido")
-            
-    #     if result:
-    #         messagebox.showinfo("Erro","Erro: usuário já cadastrado")
-    #     else:
-    # # Executar uma consulta SQL INSERT para inserir os dados do novo usuário
-    #         sql = "INSERT INTO users (user_ra,user_password,user_name) VALUES (%s,%s,%s);"
-    #         cursor.execute(sql,(ra,senha_usuario,nome))
-    #         messagebox.showinfo("Sucesso", "Cadastro realizado com sucesso")
-
-    #     connection.commit()
-    #     cursor.close()
     #Criando botao de login e area para pessoas que nao possuem cadastro
 
     CTkButton(frame, width=270, height=40, text='Cadastro',bg_color=colors["background"], fg_color=colors["theme"], corner_radius=5, text_color="white", command=func_cadastro).place(x=35, y=274)
@@ -306,7 +248,7 @@ def open_ranking(window = None):
 
             flag = not flag
 
-            rank = RankPosition(i + 1, times[i][5], datetime.timedelta(seconds=times[i][1]), color)
+            rank = misc.RankPosition(i + 1, times[i][5], datetime.timedelta(seconds=times[i][1]), color)
             ranks.append(rank)
 
         return ranks
