@@ -306,7 +306,7 @@ def run(gameType, userInfo, gameTypeId):
 
         if closeButton.draw():
             pygame.quit()
-            screens.open_main_screen(loginResult=userInfo["user_id"])
+            screens.open_main_screen(loginResult=userInfo)
 
         pygame.display.update()
 
@@ -321,7 +321,12 @@ def run(gameType, userInfo, gameTypeId):
         if sendButton.draw():
             if checkPoints():
                 updateGrid(selected, True, True)
-                connection.updateUserTime(userInfo["user_id"], seconds, gameTypeId)
+
+                print(userInfo)
+                print(seconds)
+                print(gameTypeId)
+
+                connection.updateUserTime(userInfo, seconds, gameTypeId)
                 return True, True
             else:
                 updateGrid(selected, True, False)

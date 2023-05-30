@@ -234,8 +234,8 @@ def open_ranking(window = None, loginResult = None):
     root.resizable(False, False)
     root.config(bg=colors['background'])
 
-    def generateRanks():
-        times = connection.getTimes()
+    def generateRanks(gameType):
+        times = connection.getTimes(gameType)
         ranks = []
 
         flag = True
@@ -256,9 +256,9 @@ def open_ranking(window = None, loginResult = None):
 
         return ranks
 
-    def exibirRank():
-        
-        rank = generateRanks()
+    def exibirRank(gameType):
+
+        rank = generateRanks(gameType)
 
         flag = True
 
@@ -302,11 +302,17 @@ def open_ranking(window = None, loginResult = None):
         tree.tag_configure("oddrow",background="#414C55", foreground="white")
         tree.tag_configure("evenrow",background="#313539", foreground="white")
 
-        tree.pack( anchor='c', pady=30)
+        tree.pack( anchor='c', pady=60)
 
-    exibirRank()
+    buttonsArea = Frame(root, width=500, height=30, bg=colors["background"])
+    buttonsArea.place(x = 150, y = 10)
 
-    returnButton = CTkButton(root, width=200, height=35, text="TELA INICIAL", bg_color=colors["background"], fg_color=colors["theme"], text_color=colors["white"], command=lambda: open_main_screen(loginResult, root))
-    returnButton.pack(anchor='c')
+    typePython = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="PYTHON", command=lambda: exibirRank(0))
+    typeJava = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="JAVA", command=lambda: exibirRank(1))
+    returnButton = CTkButton(buttonsArea, width=200, height=35, text="TELA INICIAL", bg_color=colors["background"], fg_color=colors["theme"], text_color=colors["white"], command=lambda: open_main_screen(loginResult, root))
+
+    typePython.pack(side=LEFT, padx=8, anchor='c')
+    typeJava.pack(side=LEFT, padx=8, anchor='c')
+    returnButton.pack(side=LEFT, padx=8, anchor='c')
 
     root.mainloop()

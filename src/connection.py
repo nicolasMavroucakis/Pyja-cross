@@ -10,25 +10,31 @@ def connect():
     cursor = connection.cursor()
 
 
-def updateUserTime(userId, userTime, gameType):
+def updateUserTime(userInfo, userTime, gameType):
 
-    check = (f"SELECT * FROM times WHERE user_id={userId} AND game={gameType}")
-    insert = (f"INSERT INTO times(user_id, time, game) VALUES({userId},{userTime},{gameType})")
-    update = (f"UPDATE times SET time={userTime} WHERE user_id={userId} AND game={gameType}")
+    userId = userInfo["user_id"]
 
-    cursor.execute(check)
+    print("userId: ", type(userId))
+    print("userTime: ", type(userTime))
+    print("gameType: ", type(gameType))
+
+    check = "SELECT * FROM times WHERE user_id=%s AND game=%s"
+    insert = "INSERT INTO times(user_id, time, game) VALUES(%s,%s,%s)"
+    update = "UPDATE times SET time=%s WHERE user_id=%s AND game=%s"
+
+    cursor.execute(check, (userId, gameType))
     res = cursor.fetchall()
 
     if len(res) == 0:
-        cursor.execute(insert)
+        cursor.execute(insert, (userId, userTime, gameType))
         connection.commit()
     else:
         __user_id, user_time, __gameMode = res[0]
         if userTime < user_time:
-            cursor.execute(update)
+            cursor.execute(update, (userTime, userId, gameType))
             connection.commit() 
 
-def getTimes():
+def getTimes(gameType):
     """
     SELECT * 
     FROM times
@@ -36,8 +42,8 @@ def getTimes():
     INNER JOIN users
     ON times.user_id = users.user_id
     """
-    sql = "SELECT * FROM times INNER JOIN users USING (user_id) WHERE game = 0 ORDER BY time"
-    cursor.execute(sql)
+    sql = "SELECT * FROM times INNER JOIN users USING (user_id) WHERE game = %s ORDER BY time"
+    cursor.execute(sql,(gameType))
 
     res = cursor.fetchall()
     return res
@@ -72,7 +78,7 @@ def login(ra, password):
     if res:
         result = {
             "user_id": res[0],
-            "user_ra": res[2],
+            "user_ra": res[1],
             "user_name": res[3],
             "auth": True
         }
