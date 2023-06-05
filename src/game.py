@@ -382,7 +382,6 @@ def run(gameType, userInfo, gameTypeId):
 
         clock.tick(15)
 
-
     pygame.quit()
 
 def stop():

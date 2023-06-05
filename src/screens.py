@@ -256,7 +256,13 @@ def open_ranking(window = None, loginResult = None):
 
         return ranks
 
-    def exibirRank(gameType):
+    columns = ('position','name','time')
+
+    global tree
+    tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2)
+
+
+    def exibirRank(gameType, tree = None):
 
         rank = generateRanks(gameType)
 
@@ -269,13 +275,16 @@ def open_ranking(window = None, loginResult = None):
         s.configure("Treeview", rowheight=35, fieldbackground=colors["background"], borderwidth=0, font=("Arial",12))
         s.configure("Treeview.Heading", background=colors["theme"], borderwidth=0, font=("Arial",16), foreground="white")
 
-        columns = ('position','name','time')
 
-        tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2)
+        if tree:
+            tree.delete(*tree.get_children())
+        else:
+            columns = ('position','name','time')
+            tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2)
 
-        tree.heading('position', text='POSIÇÃO')
-        tree.heading('name', text='NOME')
-        tree.heading('time', text='TEMPO')
+            tree.heading('position', text='POSIÇÃO')
+            tree.heading('name', text='NOME')
+            tree.heading('time', text='TEMPO')
 
         tree.column('position', anchor=CENTER, width=200)
         tree.column('name', anchor=CENTER, width=300)
@@ -307,8 +316,8 @@ def open_ranking(window = None, loginResult = None):
     buttonsArea = Frame(root, width=500, height=30, bg=colors["background"])
     buttonsArea.place(x = 150, y = 10)
 
-    typePython = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="PYTHON", command=lambda: exibirRank(0))
-    typeJava = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="JAVA", command=lambda: exibirRank(1))
+    typePython = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="PYTHON", command=lambda: exibirRank(0, tree))
+    typeJava = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="JAVA", command=lambda: exibirRank(1, tree))
     returnButton = CTkButton(buttonsArea, width=200, height=35, text="TELA INICIAL", bg_color=colors["background"], fg_color=colors["theme"], text_color=colors["white"], command=lambda: open_main_screen(loginResult, root))
 
     typePython.pack(side=LEFT, padx=8, anchor='c')
