@@ -21,7 +21,7 @@ def run(gameType, userInfo, gameTypeId):
         "background": (6, 17, 17)
     }
 
-    squaresAmount = 11
+    squaresAmount = 14
 
     screen = pygame.display.set_mode((1280,720), pygame.RESIZABLE)
     running = True
@@ -47,8 +47,28 @@ def run(gameType, userInfo, gameTypeId):
 
     type = gameType
     words = {
-        "python": [ Word("pygame", "row", (9,1), "Biblioteca para criar jogos em python."), Word("print", "column", (1,9), "Comando para escrever algo na tela em python.") ],
-        "java": [ Word("joptionpane", "column", (1,4), "Pacote para interfaces gráficas em java.") ]
+        "python": [ 
+            Word("variavel", "row", (1,1), "Espaço de memória para armazenar valores no programa."), 
+            Word("recursao", "column", (1,3), "Técnica em que uma função chama a si mesma.") ,
+            Word("lista", "column", (1,8), "Coleção mutável ordenada de elementos."), 
+            Word("input", "row", (2,8), "Dados fornecidos pelo usuário."), 
+            Word("atributo", "row", (5,8), "Característica de uma classe."), 
+            Word("break", "column", (5,12), "Interrompe a execução de um loop ou switch-case."), 
+            Word("algoritmo", "row", (7,3), "Conjunto de passos sequenciais."), 
+            Word("return", "column", (7,7), "Comando utilizado para retornar um valor de uma função."), 
+            Word("null", "row", (12,7), "Representa a ausência de um objeto ou referência."), 
+        ],
+        "java": [ 
+            Word("encapsulamento", "row", (1,1), "Protege os dados e comportamentos internos de uma classe."), 
+            Word("classes", "column", (1,3), "Estruturas que definem objetos e suas características."),
+            Word("sobrecarga", "row", (4,3), "Vários métodos com o mesmo nome e diferentes parâmetros."),
+            Word("alinhamento", "column", (4,12), "Organização visualmente ordenada de elementos de código."),
+            Word("biblioteca", "row", (9,3), "Conjunto de código pré-escrito que realiza tarefas específicas."),
+            Word("compilacao", "row", (14,3), "Tradução de código-fonte Java em código executável."),
+            Word("interface", "row", (11,4), "Define os métodos que uma classe deve implementar."),
+            Word("heranca", "column", (4,14), "Herdar características de outra classe."),
+            Word("try", "row", (15,13), "Tentar a execução de um código."),
+        ]
     }
     squares = []
 
@@ -103,6 +123,10 @@ def run(gameType, userInfo, gameTypeId):
                     letter = font.render(blocks[i][j]["written"], True, colors["black"])
                     letterPos = letter.get_rect(center=calcCenter(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide))
                     screen.blit(letter, letterPos)
+
+                    # ignore = font.render(blocks[i][j]["letter"], True, colors["gray"])
+                    # _letterPos = letter.get_rect(center=calcCenter(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide))
+                    # screen.blit(ignore, _letterPos)
 
                     number = hintFont.render(blocks[i][j]["number"], True, colors["black"])
                     screen.blit(number, (j * squareSide + marginLeft + 3, i * squareSide + marginTop + 3))
