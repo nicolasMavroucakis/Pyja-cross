@@ -7,10 +7,9 @@ connection.connect()
 
 def run(gameType, userInfo, gameTypeId):
 
-    pygame.init()
+    pygame.init() # iniciando a instancia do pygame
 
-    transparentEmptyBackground = False
-
+    # tabela com as cores que sao utilizadas
     colors = {
         "red": (255,0,0),
         "white": (200,200,200),
@@ -21,31 +20,33 @@ def run(gameType, userInfo, gameTypeId):
         "background": (6, 17, 17)
     }
 
-    squaresAmount = 14
+    squaresAmount = 14 # quantidade de quadrados
 
-    screen = pygame.display.set_mode((1280,720), pygame.RESIZABLE)
-    running = True
-    global inGame
-    inGame = False
+    screen = pygame.display.set_mode((1280,720), pygame.RESIZABLE) # criando a tela do pygame
+    running = True # quando False o jogo fecha
 
-    isEnd = False
-    isWin = False
+    isEnd = False # quando True mostra a tela final
+    isWin = False # ganhou ou perdeu o jogo
 
-    global screenWidth
-    screenWidth = screen.get_width()
-    global screenHeight
-    screenHeight = screen.get_height()
+    pygame.display.set_caption("PyJa Cross") # Setando o nome da janela
+    clock = pygame.time.Clock() # Delay entre os ticks do jogo
 
-    pygame.display.set_caption("PyJa Cross")
-    clock = pygame.time.Clock()
+    icon = pygame.image.load("images/logo.png") # Selecionando o ícone da janela
+    pygame.display.set_icon(icon) # Setando o ícone na janela do jogo
 
-    icon = pygame.image.load("images/logo.png")
-    pygame.display.set_icon(icon)
+    selected = (0,0) # Ponto inicial 
+    selectedDirection = "row" # Direção inicial
 
-    selected = (0,0)
-    selectedDirection = "row"
-
-    type = gameType
+    type = gameType # Selecionando o tipo (python/java)
+    # lista de palavras
+    """
+        Word(
+            palavra,
+            direcao,
+            posicao da primeira letra,
+            dica
+        )
+    """
     words = {
         "python": [ 
             Word("variavel", "row", (1,1), "Espaço de memória para armazenar valores no programa."), 
@@ -70,11 +71,11 @@ def run(gameType, userInfo, gameTypeId):
             Word("try", "row", (15,13), "Tentar a execução de um código."),
         ]
     }
-    squares = []
+    squares = [] # Quadrados para receber os clicks
 
     # Criar a tabela de jogo
-    table = Table(screen, words, type)
-    blocks = table.create()
+    table = Table(screen, words, type) # Criando a tabela do jogo
+    blocks = table.create() # Tabela do jogo
 
     seconds = 0
 
@@ -97,52 +98,50 @@ def run(gameType, userInfo, gameTypeId):
         time = str(datetime.timedelta(seconds=seconds))
         return time
 
+    # Atualiza a tabela
     def drawSheet(selected):
 
-        # Área do jogo
-        gameArea = calcPercent(50, screen.get_width())
-        squareSide = gameArea // squaresAmount
+        gameArea = calcPercent(50, screen.get_width()) # Área do jogo
+        squareSide = gameArea // squaresAmount # Tamanho do lado do quadrado
 
-        marginLeft = calcVW(1,screen)
-        marginTop = calcVH(2,screen)
+        marginLeft = calcVW(1,screen) # Margem à esquerda do quadrado
+        marginTop = calcVH(2,screen) # Margem ao topo do quadrado
 
-        font = pygame.font.SysFont(None, calcVW(4, screen))
-        hintFont = pygame.font.SysFont(None, calcVH(3, screen))
+        font = pygame.font.SysFont(None, calcVW(4, screen)) # Setando a fonte das letras no jogo
+        hintFont = pygame.font.SysFont(None, calcVH(3, screen)) # Setando a fonte das dicas
 
+        # Desenha os quadrados
         for i in range(len(blocks)):
             for j in range(len(blocks[i])):
                 if blocks[i][j]["enabled"]:
 
+                    # Se estiver slecionado, desenha em vermelho, caso contrário, em branco
                     if (j,i) == selected:
                         blc = pygame.draw.rect(screen, colors["red"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
                     else:
                         blc = pygame.draw.rect(screen, colors["white"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
 
-                    squares.append(blc)
+                    squares.append(blc) # Adiciona a lista de quadrados, para ser acessado ao clicar na tela
 
-                    letter = font.render(blocks[i][j]["written"], True, colors["black"])
-                    letterPos = letter.get_rect(center=calcCenter(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide))
-                    screen.blit(letter, letterPos)
+                    letter = font.render(blocks[i][j]["written"], True, colors["black"]) # Renderiza a letra
+                    letterPos = letter.get_rect(center=calcCenter(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide)) # Posiciona a letra
+                    screen.blit(letter, letterPos) # Desenha a letra
 
-                    # ignore = font.render(blocks[i][j]["letter"], True, colors["gray"])
-                    # _letterPos = letter.get_rect(center=calcCenter(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide))
-                    # screen.blit(ignore, _letterPos)
+                    number = hintFont.render(blocks[i][j]["number"], True, colors["black"]) # Número da palavra, para ser identificada com a dica
+                    screen.blit(number, (j * squareSide + marginLeft + 3, i * squareSide + marginTop + 3)) # Desenha o número da letra
+                    pygame.draw.rect(screen, colors["black"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide), 2) # Desenha o quadrado em volta
 
-                    number = hintFont.render(blocks[i][j]["number"], True, colors["black"])
-                    screen.blit(number, (j * squareSide + marginLeft + 3, i * squareSide + marginTop + 3))
-                    pygame.draw.rect(screen, colors["black"], (j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide), 2)
-                else:
-                    if not transparentEmptyBackground:
-                        sfc = pygame.Surface(pygame.Rect(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide).size, pygame.SRCALPHA)
-                        pygame.draw.rect(sfc, colors["gray"], sfc.get_rect())
-                        screen.blit(sfc,(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
+                else: # Desenha o quadrado com pouca opacidade quando não é utilizado no jogo
+                    sfc = pygame.Surface(pygame.Rect(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide).size, pygame.SRCALPHA)
+                    pygame.draw.rect(sfc, colors["gray"], sfc.get_rect())
+                    screen.blit(sfc,(j * squareSide + marginLeft, i * squareSide + marginTop, squareSide, squareSide))
 
-    def drawTimer(seconds):
+    def drawTimer(seconds): # Desenha o tempo na tela
         font = pygame.font.SysFont(None, calcVH(4, screen))
         text = font.render(convertTime(seconds), True, colors["white"])
         screen.blit(text, (calcVW(67, screen), calcVH(95, screen), calcVW(5, screen), calcVH(5, screen)))
 
-    def updateGrid(selected, end = False, win = False, seconds = 0):
+    def updateGrid(selected, end = False, win = False, seconds = 0): # Atualiza a tela
         screen.fill(colors["background"])
         if not end:
             
@@ -161,16 +160,15 @@ def run(gameType, userInfo, gameTypeId):
 
         return isEnd, isWin
 
-    def updateSelected(selected, direction = None):
+    def updateSelected(selected, direction = None): # Altera o quadrado selecionado
 
         x,y = selected
-        
         _selectedDirection = selectedDirection
 
         if direction == "down":
 
             i = y
-            while True:
+            while True: # Desce um quadrado até encontrar o próximo que está ativado
                 if i == len(blocks) - 1:
                     i = 0
                 else:
@@ -187,8 +185,9 @@ def run(gameType, userInfo, gameTypeId):
                     break
 
         elif direction == "up":
+
             i = y
-            while True:
+            while True: # Sobe um quadrado até encontrar o próximo que está ativado
                 if i == 0:
                     i = len(blocks) - 1
                 else:
@@ -205,8 +204,9 @@ def run(gameType, userInfo, gameTypeId):
                     break
 
         elif direction == "right":
+            
             i = x
-            while True:
+            while True: # Anda um quadrado para a direita até encontrar o próximo que está ativado
                 if i == len(blocks[y]) - 1:
                     i = 0
                 else:
@@ -223,8 +223,9 @@ def run(gameType, userInfo, gameTypeId):
                     break
 
         elif direction == "left":
+
             i = x
-            while True:
+            while True: # Anda um quadrado para a direita até encontrar o próximo 
                 if i == 0 :
                     i = len(blocks[y]) - 1
                 else:
@@ -242,67 +243,64 @@ def run(gameType, userInfo, gameTypeId):
 
         return (x,y), _selectedDirection   
 
-    def writeText(selected, text):
-        direction = "right" if selectedDirection == "row" else "down"
+    def writeText(selected, text): # Indica qual letra deve ser escrita no quadrado selecionado e se move na direção da palavra
+        direction = "right" if selectedDirection == "row" else "down" # Caso a palavra esteja na horizontal, se move para a direita, caso contrário, para baixo
 
         x,y = selected
         blocks[y][x]["written"] = text
-        updateGrid(selected)
+
+        updateGrid(selected) # Atualiza a tela
 
         _selected,_ = updateSelected(selected, direction)
 
         return _selected
 
-    def cleanField(selected):
-
-        direction = "left" if selectedDirection == "row" else "up"
+    def cleanField(selected): # Apaga a letra escrita no quadrado e se move na direção contrária da palavra
+        direction = "left" if selectedDirection == "row" else "up" # Caso a palavra esteja na horizontal, se move para a esquerda, caso contrário, para cima
 
         position,_ = updateSelected(selected, direction)
         x,y = position
         blocks[y][x]["written"] = ""
 
-        updateGrid(selected)
+        updateGrid(selected) # Atualiza a tela
         
         _selected, _ = updateSelected(selected, direction)
 
         return _selected
 
-    def changeDirection(selected):
+    def changeDirection(selected): # Muda a direção selecionada caso o usuário aperte ENTER em um quadrado que faz parte de 2 ou mais palavras
         x,y = selected
         newDirection = selectedDirection
 
         if len(blocks[y][x]["words"]) > 1:
-            newDirection = "column" if selectedDirection == "row" else "row"
+            newDirection = "column" if selectedDirection == "row" else "row" # Caso a direção selecionada seja horizontal, alterará para vertical e vice-versa
 
         return newDirection
 
-    def checkLetter(x, y):
-        if blocks[y][x]["written"].upper() == blocks[y][x]["letter"].upper() or not blocks[y][x]["enabled"]:
-            return True
-        else:
-            return False
+    def checkLetter(x, y): # Checa se a letra escrita está correta
+        return blocks[y][x]["written"].upper() == blocks[y][x]["letter"].upper() or not blocks[y][x]["enabled"]
 
-    def checkPoints():
+    def checkPoints(): # Chama a função checkLetter em todos os quadrados ativados
         win = True
 
         for y in range(len(blocks)):
             for x in range(len(blocks[y])):
-                if not checkLetter(x, y):
+                if not checkLetter(x, y): # Se alguma letra estiver errada, retornará False e o usuário perde o jogo
                     win = False
 
         return win
 
-    def drawResult(win):
-        textBackground = pygame.Rect(100, 100, calcVW(50, screen), calcVH(30, screen))
-        textBackground.centerx = screen.get_width() // 2
-        textBackground.centery = screen.get_height() // 2
+    def drawResult(win): # Desenha a tela final com base no seu resultado
+        textBackground = pygame.Rect(100, 100, calcVW(50, screen), calcVH(30, screen)) # Desenha o fundo do texto
+        textBackground.centerx = screen.get_width() // 2 # Calcula o X central da tela
+        textBackground.centery = screen.get_height() // 2 # Calcula o Y central da tela
 
-        font = pygame.font.SysFont(None, calcVW(8, screen))
-        timeFont = pygame.font.SysFont(None, calcVW(5, screen))
+        font = pygame.font.SysFont(None, calcVW(8, screen)) # Cria a fonte do texto
+        timeFont = pygame.font.SysFont(None, calcVW(5, screen)) # Cria a fonte do texto indicando o tempo
 
-        screen.fill(colors["background"])
+        screen.fill(colors["background"]) # Deixa o fundo completamente opaco
 
-        if win:
+        if win: # Executa caso o usuário ganhe o jogo
 
             pygame.draw.rect(screen, colors["win_bg"], textBackground)
 
@@ -314,7 +312,7 @@ def run(gameType, userInfo, gameTypeId):
             timeTextPos = timeText.get_rect(center = calcCenter2(textBackground.x, textBackground.y, calcVW(50, screen), calcVH(30, screen) + calcVH(23, screen)))
             screen.blit(timeText, timeTextPos)
 
-        else:
+        else: # Executa caso o usuário perca o jogo
 
             pygame.draw.rect(screen, colors["loose_bg"], textBackground)
 
@@ -322,91 +320,92 @@ def run(gameType, userInfo, gameTypeId):
             textPos = text.get_rect(center = calcCenter2(textBackground.x, textBackground.y, calcVW(50, screen), calcVH(30, screen)))
             screen.blit(text, textPos)
 
-        buttonScale = 0.5
+        buttonScale = 0.5 # Escala para o tamanho do botão
 
-        closeButtonImg = pygame.image.load("images/close_button.png").convert_alpha()
+        closeButtonImg = pygame.image.load("images/close_button.png").convert_alpha() # Pega a imagem do botão de fechar
+        #Posiciona o botão
         buttonPos = closeButtonImg.get_rect(center = calcCenter2(textBackground.x + calcVW(20, screen), textBackground.y + calcVH(36, screen), int(closeButtonImg.get_width() * buttonScale), int(closeButtonImg.get_height() * buttonScale)))
-        closeButton = Button(screen, (buttonPos.left, buttonPos.top), closeButtonImg, 0.5)
+        closeButton = Button(screen, (buttonPos.left, buttonPos.top), closeButtonImg, 0.5) # Cria um botão com a classe Button do arquivo misc.py
 
-        if closeButton.draw():
-            pygame.quit()
-            screens.open_main_screen(loginResult=userInfo)
+        if closeButton.draw(): # Caso o botão seja apertado
+            pygame.quit() # Fecha a janela do jogo 
+            screens.open_main_screen(loginResult=userInfo) # Abre a tela inicial do programa
 
-        pygame.display.update()
+        pygame.display.update() # Atualiza a tela
 
-    def createButtons():
-        buttonImg = pygame.image.load("images/send_button.png").convert_alpha()
+    def createButtons(): # Cria o botão de enviar a resposta
+        buttonImg = pygame.image.load("images/send_button.png").convert_alpha() # Pega a imagem do botão de enviar
 
-        buttonLeft = calcVW(60, screen)
-        buttonTop = calcVH(80, screen)
+        buttonLeft = calcVW(60, screen) # Calcula a margem à esquerda
+        buttonTop = calcVH(80, screen) # Calcula a margem ao topo
 
-        sendButton = Button(screen, (buttonLeft, buttonTop), buttonImg, 0.5)
+        sendButton = Button(screen, (buttonLeft, buttonTop), buttonImg, 0.5) # Cria um botão com a classe Button do arquivo misc.py
 
-        if sendButton.draw():
-            if checkPoints():
-                updateGrid(selected, True, True)
+        if sendButton.draw(): # Caso o botão seja apertado
+            if checkPoints(): # Caso o usuário ganhe o jogo
+                updateGrid(selected, True, True) # Atualiza a tela informando que o jogo acabou e que o usuário ganhou
 
-                print(userInfo)
-                print(seconds)
-                print(gameTypeId)
-
-                connection.updateUserTime(userInfo, seconds, gameTypeId)
+                connection.updateUserTime(userInfo, seconds, gameTypeId) # Atualiza o tempo na database
                 return True, True
             else:
-                updateGrid(selected, True, False)
+                updateGrid(selected, True, False) # Atualiza a tela informando que o jogo acabou e que o usuário perdeu
                 return True, False
             
         return False, False
 
-    frameCount = 0
+    frameCount = 0 # Quantidade de frames executados, para calcular o tempo jogado
 
     while running:
 
-        frameCount += 1
+        frameCount += 1 # Soma + 1 na quantidade de frames
         
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        for event in pygame.event.get(): # Eventos pygame
+            if event.type == pygame.QUIT: # Caso o usuário fecha o jogo
+                running = False # Fecha a instância do pygame
 
-            elif event.type == pygame.KEYDOWN:
-                char = event.unicode
-                if char.isalpha():
-                    selected = writeText(selected, char.upper())
+            elif event.type == pygame.KEYDOWN: # Caso uma tecla seja pressionada
+                char = event.unicode # Pega qual caractere foi inserido
+                if char.isalpha(): # Checa se foi uma letra
+                    selected = writeText(selected, char.upper()) # Escreve a letra
 
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                pressed = pygame.mouse.get_pressed()[0] == 1
+            elif event.type == pygame.MOUSEBUTTONDOWN: # Caso um botão do mouse seja pressionado
+                pos = pygame.mouse.get_pos() # Pega a posição atual do mouse
+                pressed = pygame.mouse.get_pressed()[0] == 1 # Checa se o botão apertado foi o botão 1 do mouse
                 
-                if pressed:
+                if pressed: # Se o botão apertado foi o botão 1
                     for i in squares:
-                        if i.collidepoint(pos):
-                            _selected = (i.x // 50, i.y // 50 -1 )
-                            selected, selectedDirection = updateSelected(_selected, "down")
+                        if i.collidepoint(pos): # Checa se o mouse está colidinho com um quadrado
+
+                            gameArea = calcPercent(50, screen.get_width()) # Calcula a área do jogo
+                            squareSide = gameArea // squaresAmount # Calcula o tamanho do quadrado
+
+                            _selected = (i.x // squareSide, i.y // squareSide -1 ) # Calcula qual quadrado foi selecionado
+                            selected, selectedDirection = updateSelected(_selected, "down") # Atualiza o quadrado selecionado
                             break
 
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed() # Tecla pressionada
 
-        if keys[pygame.K_DOWN]:
-            selected, selectedDirection = updateSelected(selected, "down")
-        if keys[pygame.K_UP]:
-            selected, selectedDirection = updateSelected(selected, "up")
-        if keys[pygame.K_RIGHT]:
-            selected, selectedDirection = updateSelected(selected, "right")
-        if keys[pygame.K_LEFT]:
-            selected, selectedDirection = updateSelected(selected, "left")
-        if keys[pygame.K_BACKSPACE]:
-            selected = cleanField(selected)
-        if keys[pygame.K_RETURN]:
-            selectedDirection = changeDirection(selected)
+        if keys[pygame.K_DOWN]: # Caso a telca seja a seta para baixo
+            selected, selectedDirection = updateSelected(selected, "down") # Atualiza o quadrado selecionado com +1 no eixo Y
+        if keys[pygame.K_UP]: # Caso a telca seja a seta para cima
+            selected, selectedDirection = updateSelected(selected, "up") # Atualiza o quadrado selecionado com -1 no eixo Y
+        if keys[pygame.K_RIGHT]: # Caso a telca seja a seta para direita
+            selected, selectedDirection = updateSelected(selected, "right") # Atualiza o quadrado selecionado com +1 no eixo X
+        if keys[pygame.K_LEFT]: # Caso a telca seja a seta para esquerda
+            selected, selectedDirection = updateSelected(selected, "left") # Atualiza o quadrado selecionado com -1 no eixo X
+        if keys[pygame.K_BACKSPACE]: # Caso a tecla seja BACKSPACE
+            selected = cleanField(selected) # Apaga a letra do quadrado selecionado
+        if keys[pygame.K_RETURN]: # Caso a tecla pressionada seja ENTER
+            selectedDirection = changeDirection(selected) # Trica a direção selecionada
 
-        isEnd, isWin = updateGrid(selected, isEnd, isWin, int(frameCount/1000 * 60))
+        isEnd, isWin = updateGrid(selected, isEnd, isWin, int(frameCount/1000 * 60)) # Chama a função de atualizar a tela
 
         if not isEnd:
-            seconds = int(frameCount/1000 * 60)
+            seconds = int(frameCount/1000 * 60) # Altera o tempo de jogo (60 FPS)
 
-        clock.tick(15)
+        clock.tick(15) # Função nativa do pygame de delay para rodar o loop principal
 
-    pygame.quit()
+    pygame.quit() # Fecha a instância do pygame, caso a variável running tenha valor False
 
-def stop():
-    pygame.quit()
+def stop(): # Fecha o jogo
+    pygame.quit() # Fecha a instância do pygame

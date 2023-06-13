@@ -1,38 +1,34 @@
 import pygame
 
-class Button():
-    def __init__(self, screen, pos, image, scale):
+class Button(): # Botão do pygame
+    def __init__(self, screen, pos, image, scale): # Construtor da classe
 
-        width = calcPercent(40, screen.get_width())
-        height = calcPercent(30, screen.get_height())
+        width = calcPercent(40, screen.get_width()) # Calcula a largura do botão
+        height = calcPercent(30, screen.get_height()) # Calcula a altura do botão
 
-        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = pos
+        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale))) # Seta a imagem do botão
+        self.rect = self.image.get_rect() # Pega as informações da imagem do botão
+        self.rect.topleft = pos # Posição do botão
 
-        self.clicked = False
-        self.screen = screen
+        self.screen = screen # Tela do jogo para desenhar o botão
 
-    def draw(self):
+    def draw(self): # Desenha o botão e retorna True caso seja pressionado
 
-        action = False
-        pos = pygame.mouse.get_pos()
+        action = False # Indica se o botão foi pressionado
+        pos = pygame.mouse.get_pos() # Pega a posição do mouse
 
-        if self.rect.collidepoint(pos):
-            if pygame.mouse.get_pressed()[0] == 1:
-                self.clicked = True
+        if self.rect.collidepoint(pos): # Se a o mouse colide com o botão
+            if pygame.mouse.get_pressed()[0] == 1: # Se o botão pressionado foi o botão 1 do mouse
                 action = True
 
-            if pygame.mouse.get_pressed()[0] == 0:
-                self.clicked = False
-
-        self.screen.blit(self.image, (self.rect.x, self.rect.y))
+        self.screen.blit(self.image, (self.rect.x, self.rect.y)) # Desenha o botão na tela
 
         return action
 
-class Table():
-    def __init__(self, screen, words, type):
+class Table(): # Tabela de jogo
+    def __init__(self, screen, words, type): # Construtor da classe
 
+        # Tabela vazia que será alterada de acordo com as palavras
         table = [
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" }],
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" }],
@@ -51,88 +47,80 @@ class Table():
             [{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" },{ "enabled": False, "letter": "", "written": "", "words": [], "number": "" }],
         ]
 
-        for i in range(len(words[type])):
-            word = words[type][i]
+        for i in range(len(words[type])): # Para cada palavra
+            word = words[type][i] # Indica qual palavra vai ser utilizada
 
-            splittedWord = splitWord(word.word)
-            y,x = word.position
-            direction = word.direction
+            splittedWord = splitWord(word.word) # Separa as letras da palavra
+            y,x = word.position # posição da primeira letra da palavra
+            direction = word.direction # Direção da palavra
 
 
-            table[y - 1][x - 1]["number"] = f"{i + 1}"
+            table[y - 1][x - 1]["number"] = f"{i + 1}" # Indica o número da palavra
 
-            for letter in splittedWord:
-                print(y,x)
-                block = table[y - 1][x - 1]
+            for letter in splittedWord: # Para cada letra
+                block = table[y - 1][x - 1] # Indica qual quadrado ta tabela vai ser utilizado
 
-                block["letter"] = letter
-                block["enabled"] = True
-                block["words"].append(i)
+                block["letter"] = letter # Seta a letra correta
+                block["enabled"] = True # Ativa o quadrado
+                block["words"].append(i) # Adiciona a palavra a este quadrado
 
-                if direction == "row":
+                if direction == "row": # Se for na horizontal, vai adicionar 1 no eixo X, caso contrário, adiciona 1 no eixo Y
                     x += 1
                 else:
                     y += 1
 
-        self.screen = screen
-        self.table = table
+        self.screen = screen # Tela do jogo para desenhar a tabela
+        self.table = table # Tabela
 
-    def create(self):
+    def create(self): # Cria a tabela
         return self.table
     
-class Hints():
-    def __init__(self, screen, words, type):
-        textHeight = calcVH(4, screen)
-        textLeft = calcVW(55, screen)
-        textTop = calcVH(4, screen)
+class Hints(): # Lista de dicas
+    def __init__(self, screen, words, type): # Construtor da classe
+        textHeight = calcVH(4, screen) # Altura do texto
+        textLeft = calcVW(55, screen) # Calcula a margem à esquerda
+        textTop = calcVH(4, screen) # Calcula a margem ao topo
 
-        font = pygame.font.SysFont(None, calcVH(4, screen))
+        font = pygame.font.SysFont(None, calcVH(4, screen)) # Cria a fonte do texto
 
-        for i in range(len(words[type])):
-            word = words[type][i]
+        for i in range(len(words[type])): # Para cada palavra
+            word = words[type][i] # Indica a palavra que vai ser utilizada
 
-            text = font.render(f"{i + 1}. {word.hint}", False, (200,200,200))
-            screen.blit(text, (textLeft, textTop))
-            textTop += textHeight
+            text = font.render(f"{i + 1}. {word.hint}", False, (200,200,200)) # Renderiza o texto da dica
+            screen.blit(text, (textLeft, textTop)) # Insere o texto na tela
+            textTop += textHeight # Soma à margem ao topo para não ocorrer sobreposição no texto
 
-class Word():
-    def __init__(self, word, direction, position, hint):
-        self.word = word
-        self.direction = direction
-        self.position = position
-        self.hint = hint
+class Word(): # Palavra do jogo
+    def __init__(self, word, direction, position, hint): # Construtor da classe
+        self.word = word # Palavra
+        self.direction = direction # Direção
+        self.position = position # Posição inicial
+        self.hint = hint # Dica
 
-class Background(pygame.sprite.Sprite):
-    def __init__(self, image_file, location):
-        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
-        self.image = pygame.image.load(image_file)
-        self.rect = self.image.get_rect()
-        self.rect.left, self.rect.top = location
+class RankPosition(): # Posição no ranking
+    def __init__(self, position, name, time, color): # Construtor da classe
+        self.position = position # Posição
+        self.name = name # Nome do usuário
+        self.time = time # Tempo do usuário
+        self.color = color # Cor do fundo
 
-class RankPosition():
-    def __init__(self, position, name, time, color):
-        self.position = position
-        self.name = name
-        self.time = time
-        self.color = color
-
-def splitWord(word):
+def splitWord(word): # Separa as letras das palavras
     chars = []
     for i in word:
         chars.append(i)
 
     return chars
 
-def calcPercent(percent, val):
+def calcPercent(percent, val): # Calcula uma porcentagem
     p1 = int(val / 100)
     return percent * p1
 
-def calcVH(val, screen):
+def calcVH(val, screen): # Calcula a ViewHeight (inspirado no CSS)
     height = screen.get_height()
     vh = int(height / 100)
     return val * vh
 
-def calcVW(val, screen):
+def calcVW(val, screen): # Calcula a ViewWidth (inspirado no CSS)
     width = screen.get_width()
     vw = int(width / 100)
     return val * vw

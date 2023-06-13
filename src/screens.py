@@ -19,6 +19,7 @@ connection.connect()
 
 def open_login(window = None):
 
+    # Deleta uma tela já aberta
     if window:
         window.destroy()
 
@@ -164,7 +165,6 @@ def open_choose_screen(loginResult, window = None):
     if window:
         window.destroy()
 
-
     root = Tk()
     root.iconbitmap("images/logo.ico")
     root.title("PyJa Cross")
@@ -186,9 +186,7 @@ def open_choose_screen(loginResult, window = None):
 
     CTkButton(root, width=300, height=100, font=('microsoft Yahei UILight',26, "bold"), text="PYTHON", fg_color=colors["theme"], text_color=colors["white"], corner_radius=10, command=lambda: open_game("python", root, 0)).place(x=150, y=350)
     CTkButton(root, width=300, height=100, font=('microsoft Yahei UILight',26, "bold"), text="JAVA", fg_color=colors["theme"], text_color=colors["white"], corner_radius=10, command=lambda: open_game("java", root, 1)).place(x=500,y=350)
-    # Button(root, width=30, height=3, font=('microsoft Yahei UILight',15), text="PYTHON", bg="#3771A1", fg=colors["white"], border=0,command=lambda: open_game("python", root, 0)).place(x=150, y = 350)
-    # Button(root, width=30, height=3, font=('microsoft Yahei UILight',15), text="JAVA", bg="#3771A1", fg=colors["white"], border=0, command=lambda: open_game("java", root, 1)).place(x=500, y=350)
-
+   
     root.mainloop()
 
 def open_main_screen(loginResult, window = None):
@@ -234,15 +232,13 @@ def open_ranking(window = None, loginResult = None):
     root.resizable(False, False)
     root.config(bg=colors['background'])
 
-    def generateRanks(gameType):
-        times = connection.getTimes(gameType)
+    def generateRanks(gameType): # Função para gerar o rank
+        times = connection.getTimes(gameType) # Pega os 10 melhores tempos
         ranks = []
 
-        flag = True
+        flag = True # Indica se utilizará a cor mais clara ou mais escura para melhor visualização do rank (NÃO UTILIZAOD AQUI)
 
         for i in range(len(times)):
-            # userId, time, game, ra, password, name 
-            #   0      1     2    3      4       5
 
             if flag:
                 color = "#414C55"
@@ -251,75 +247,78 @@ def open_ranking(window = None, loginResult = None):
 
             flag = not flag
 
-            rank = misc.RankPosition(i + 1, times[i][5], datetime.timedelta(seconds=times[i][1]), color)
-            ranks.append(rank)
+            rank = misc.RankPosition(i + 1, times[i][5], datetime.timedelta(seconds=times[i][1]), color) # Cria os dados do usuário para ser adicionado no rank
+            ranks.append(rank) # Adiciona na lista de ranks
 
         return ranks
 
-    columns = ('position','name','time')
+    columns = ('position','name','time') # Colunas da tabela de rank
 
     global tree
-    tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2)
+    tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2) # Cria a tabela de rank
 
 
-    def exibirRank(gameType, tree = None):
+    def exibirRank(gameType, tree = None): # Mostra o rank
 
-        rank = generateRanks(gameType)
+        rank = generateRanks(gameType) # Gera o rank
 
-        flag = True
+        flag = True # Indica se utilizará a cor mais clara ou mais escura para melhor visualização do rank
 
-        s = ttk.Style()
-        s.theme_use("clam")
+        s = ttk.Style() # Cria o estilo da tabela
+        s.theme_use("clam") # Seleciona o tema (clam é o nome do tema)
 
-        s.map("Treeview", background=[('disabled','#000'), ('active','#fff')],foreground=[('disabled','#000')])
-        s.configure("Treeview", rowheight=35, fieldbackground=colors["background"], borderwidth=0, font=("Arial",12))
-        s.configure("Treeview.Heading", background=colors["theme"], borderwidth=0, font=("Arial",16), foreground="white")
+        s.map("Treeview", background=[('disabled','#000'), ('active','#fff')],foreground=[('disabled','#000')]) # Configuração básica para o estilo da tabela
+        s.configure("Treeview", rowheight=35, fieldbackground=colors["background"], borderwidth=0, font=("Arial",12)) # Configuração para os dados da tabela
+        s.configure("Treeview.Heading", background=colors["theme"], borderwidth=0, font=("Arial",16), foreground='#000') # Configuração para o cabeçalho da tabela
 
 
-        if tree:
-            tree.delete(*tree.get_children())
+        if tree: # Caso já exista uma (quando alterana entre python/java)
+            tree.delete(*tree.get_children()) # limpa a tabela já existente
         else:
-            columns = ('position','name','time')
-            tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2)
+            columns = ('position','name','time') # Colunas da tabela de rank
+            tree = ttk.Treeview(root, columns=columns, show='headings', height=10, padding=2) # Cria a nova tabela de rank
 
-            tree.heading('position', text='POSIÇÃO')
-            tree.heading('name', text='NOME')
-            tree.heading('time', text='TEMPO')
+            tree.heading('position', text='POSIÇÃO') # Seta o texto POSIÇÃO
+            tree.heading('name', text='NOME') # Seta o texto NOME
+            tree.heading('time', text='TEMPO') # Seta o texto TEMPO
 
-        tree.column('position', anchor=CENTER, width=200)
-        tree.column('name', anchor=CENTER, width=300)
-        tree.column('time', anchor=CENTER, width=200)
+        tree.column('position', anchor=CENTER, width=200) # Posiciona a coluna de posição e seta a largura em 200px
+        tree.column('name', anchor=CENTER, width=300) # Posiciona a coluna de nome e seta a largura em 300px
+        tree.column('time', anchor=CENTER, width=200) # Posiciona a coluna de tempo e seta a largura em 200px
 
-        tree.bind('<Motion>', 'break')
+        tree.bind('<Motion>', 'break') # Desativa o redimensionamento das colunas
 
-        positions = []
+        positions = [] # Lista com as posições
 
         for i in range(len(rank)):
 
-            positions.append((f'{rank[i].position}°', f'{rank[i].name}', f'{rank[i].time}'))
+            positions.append((f'{rank[i].position}°', f'{rank[i].name}', f'{rank[i].time}')) # Adiciona as posições 
 
         for i in positions:
 
-            if flag:
+            if flag: # Caso seja linha par
                 tags = ("oddrow")
-            else:
+            else: # Caso seja linha ímpar
                 tags = ("evenrow")
 
-            flag = not flag
-            tree.insert('', END, values=i, tags=tags)
+            flag = not flag # Altera o indicador da cor de fundo
+            tree.insert('', END, values=i, tags=tags) # Insere a linha na tabela
 
-        tree.tag_configure("oddrow",background="#414C55", foreground="white")
-        tree.tag_configure("evenrow",background="#313539", foreground="white")
+        tree.tag_configure("oddrow",background="#414C55", foreground="white") # Cor mais escura nas linhas pares
+        tree.tag_configure("evenrow",background="#313539", foreground="white") # Cor mais clara nas linhas ímpares
 
-        tree.pack( anchor='c', pady=60)
+        tree.pack( anchor='c', pady=60) # Desenha a tabela
 
+    # Cria a área dos botões (python/java/tela inicial)
     buttonsArea = Frame(root, width=500, height=30, bg=colors["background"])
     buttonsArea.place(x = 150, y = 10)
 
+    # Cria cada um dos 3 botões
     typePython = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="PYTHON", command=lambda: exibirRank(0, tree))
     typeJava = CTkButton(buttonsArea, width=200, height=35, bg_color=colors["background"], fg_color=colors["theme"], text_color="white", text="JAVA", command=lambda: exibirRank(1, tree))
     returnButton = CTkButton(buttonsArea, width=200, height=35, text="TELA INICIAL", bg_color=colors["background"], fg_color=colors["theme"], text_color=colors["white"], command=lambda: open_main_screen(loginResult, root))
 
+    # Posiciona cada um dos 3 botões
     typePython.pack(side=LEFT, padx=8, anchor='c')
     typeJava.pack(side=LEFT, padx=8, anchor='c')
     returnButton.pack(side=LEFT, padx=8, anchor='c')
