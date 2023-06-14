@@ -290,6 +290,7 @@ def run(gameType, userInfo, gameTypeId):
 
         return win
 
+
     def drawResult(win): # Desenha a tela final com base no seu resultado
         textBackground = pygame.Rect(100, 100, calcVW(50, screen), calcVH(30, screen)) # Desenha o fundo do texto
         textBackground.centerx = screen.get_width() // 2 # Calcula o X central da tela
