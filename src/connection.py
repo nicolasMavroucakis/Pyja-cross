@@ -33,7 +33,7 @@ def updateUserTime(userInfo, userTime, gameType): # Atualiza o tempo do jogador
             connection.commit() 
 
 def getTimes(gameType): # Puxa os 10 melhores tempos da database
-    sql = "SELECT * FROM times INNER JOIN users USING (user_id) WHERE game = %s ORDER BY time LIMIT=10"
+    sql = "SELECT * FROM times INNER JOIN users USING (user_id) WHERE game = %s ORDER BY time LIMIT 10"
     cursor.execute(sql,(gameType))
 
     res = cursor.fetchall()
