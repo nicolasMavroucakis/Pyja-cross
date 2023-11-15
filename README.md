@@ -12,12 +12,11 @@
 
 <h2>Participantes:</h2>
 <ul>
-    <li><h4>Felipe Mariotto - 23.01011-8</h4></li>
     <li><h4>Gabriel Xavier - 23.00196-8</h4></li>
     <li><h4>Guilherme Santos - 23.00796-6</h4></li>
     <li><h4>Gustavo Perez - 23.00437-0</h4></li>
     <li><h4>Heitor Miranda - 23.00562-9</h4></li>
-    <li><h4>Nicolas Mavroucakis - 23.00562-9</h4></li>
+    <li><h4>Nicolas de Alemida Mavroucakis - 23.00562-9</h4></li>
 </ul>
 
 <h1>O jogo ainda está em desenvolvimento!</h1>
